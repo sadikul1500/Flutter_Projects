@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/noun_card.dart';
+import 'package:kids_learning_tool/Lessons/Nouns/noun_search_bar.dart';
 
 class Noun extends StatefulWidget {
   @override
@@ -27,13 +28,7 @@ class _NounState extends State<Noun> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nouns',
-            style: TextStyle(
-              fontSize: 24,
-            )),
-        centerTitle: true,
-      ),
+      appBar: SearchBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisAlignment: MainAxisAlignment.center,
@@ -93,3 +88,11 @@ class _NounState extends State<Noun> {
 }
 
 // const Text('Noun page')
+
+// AppBar(
+//         title: const Text('Nouns',
+//             style: TextStyle(
+//               fontSize: 24,
+//             )),
+//         centerTitle: true,
+//       ),
