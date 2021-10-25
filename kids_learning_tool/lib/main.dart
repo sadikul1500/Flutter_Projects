@@ -4,6 +4,7 @@ import 'package:kids_learning_tool/Lessons/Nouns/noun.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     initialRoute: '/home',
     routes: {
       // '/': (context) => Loading(),
