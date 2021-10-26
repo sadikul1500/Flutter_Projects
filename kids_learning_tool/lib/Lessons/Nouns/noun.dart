@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
@@ -12,25 +14,46 @@ class Noun extends StatefulWidget {
 class _NounState extends State<Noun> {
   NameList nameList = NameList();
   late List<Name> names;
-  int index = 0;
+  int _index = 0;
   late int len;
+  //String? _result;
 
   @override
   void initState() {
-    super.initState();
-    List<Name> names = nameList.getList();
+    names = nameList.getList();
     len = names.length;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchBar(),
+      appBar: AppBar(
+        title: const Text('Noun'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                var result = await showSearch<String>(
+                  context: context,
+                  delegate: CustomDelegate(),
+                );
+                setState(() {
+                  _index = max(
+                      0, names.indexWhere((element) => element.text == result));
+                  //_result = result;
+                });
+              }, //Navigator.pushNamed(context, '/searchPage'),
+              // onPressed: () => Navigator.of(context)
+              //     .push(MaterialPageRoute(builder: (_) => SearchPage())),
+              icon: const SafeArea(child: Icon(Icons.search_sharp)))
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          NounCard(name: names.elementAt(index)),
+          NounCard(name: names.elementAt(_index)),
           const SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +61,7 @@ class _NounState extends State<Noun> {
               ElevatedButton.icon(
                 onPressed: () {
                   setState(() {
-                    index = (index - 1) % len;
+                    _index = (_index - 1) % len;
                   });
                 },
                 label: const Text(
@@ -55,14 +78,14 @@ class _NounState extends State<Noun> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    index = (index + 1) % len;
+                    _index = (_index + 1) % len;
                   });
                 },
                 child: Row(
                   children: <Widget>[
                     const Text('Next',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 21,
                         )),
                     const Icon(Icons.navigate_next),
                   ],
@@ -83,3 +106,5 @@ class _NounState extends State<Noun> {
     );
   }
 }
+
+//appbar: SearchBar()
