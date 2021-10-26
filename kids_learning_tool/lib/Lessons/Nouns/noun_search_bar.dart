@@ -1,24 +1,50 @@
 import 'package:flutter/material.dart';
-//import 'dart:async';
+import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
+import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
 
 class SearchBar extends StatefulWidget with PreferredSizeWidget {
-  const SearchBar({Key? key}) : super(key: key);
-
   @override
   State<SearchBar> createState() => _SearchBarState();
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class _SearchBarState extends State<SearchBar> {
   late Icon _searchIcon;
   late Widget _title;
+
+  final globalKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _controller = TextEditingController();
+
+  NameList nameList = NameList();
+  late List<Name> _list;
+  late bool _isSearching;
+  String _searchText = "";
+  List searchresult = [];
+
+  _SearchBarState() {
+    _controller.addListener(() {
+      if (_controller.text.isEmpty) {
+        setState(() {
+          _isSearching = false;
+          _searchText = "";
+        });
+      } else {
+        setState(() {
+          _isSearching = true;
+          _searchText = _controller.text;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     _searchIcon = const Icon(Icons.search_sharp);
     _title = const Text('Noun');
+    _list = nameList.getList();
+    _isSearching = false;
     super.initState();
   }
 
@@ -53,7 +79,11 @@ class _SearchBarState extends State<SearchBar> {
                           border: InputBorder.none,
                         ),
                         style: TextStyle(color: Colors.white),
+                        //onChanged: searchOperation(_searchText),
                       ));
+                  setState(() {
+                    _isSearching = true;
+                  });
                 } else {
                   _searchIcon = const Icon(Icons.search_sharp);
                   _title = const Text('Noun');
@@ -65,8 +95,17 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 
-  // @override
-  // Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  void searchOperation(String searchText) {
+    searchresult.clear();
+    if (_isSearching != null) {
+      for (int i = 0; i < _list.length; i++) {
+        String textData = _list[i].text;
+        if (textData.toLowerCase().contains(searchText.toLowerCase())) {
+          searchresult.add(textData);
+        }
+      }
+    }
+  }
 }
 
 // class MyAppBar extends AppBar {
