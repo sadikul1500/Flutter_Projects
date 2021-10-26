@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/noun_card.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/noun_search_bar.dart';
@@ -9,19 +10,15 @@ class Noun extends StatefulWidget {
 }
 
 class _NounState extends State<Noun> {
-  List<Name> names = [
-    Name('Umbrella', 'ছাতা'),
-    Name('Apple', 'আপেল'),
-    Name('Car', 'গাড়ি'),
-    Name('Deer', 'হরিণ'),
-  ];
+  NameList nameList = NameList();
+  late List<Name> names;
   int index = 0;
   late int len;
 
   @override
   void initState() {
     super.initState();
-    names.sort((a, b) => a.text.compareTo(b.text));
+    List<Name> names = nameList.getList();
     len = names.length;
   }
 
@@ -86,13 +83,3 @@ class _NounState extends State<Noun> {
     );
   }
 }
-
-// const Text('Noun page')
-
-// AppBar(
-//         title: const Text('Nouns',
-//             style: TextStyle(
-//               fontSize: 24,
-//             )),
-//         centerTitle: true,
-//       ),
