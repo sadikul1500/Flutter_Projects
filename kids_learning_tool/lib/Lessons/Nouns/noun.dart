@@ -16,18 +16,19 @@ class _NounState extends State<Noun> {
   late List<Name> names;
   int _index = 0;
   late int len;
-  //String? _result;
 
   @override
   void initState() {
     names = nameList.getList();
     len = names.length;
+    _index = 0;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Noun'),
         centerTitle: true,
@@ -49,51 +50,54 @@ class _NounState extends State<Noun> {
               icon: const SafeArea(child: Icon(Icons.search_sharp)))
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          NounCard(name: names.elementAt(_index)),
-          const SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _index = (_index - 1) % len;
-                  });
-                },
-                label: const Text(
-                  'Prev',
-                  style: TextStyle(
-                    fontSize: 20,
+      body: SingleChildScrollView(
+        child: Column(
+          //resizeTo
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            NounCard(name: names.elementAt(_index)),
+            const SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _index = (_index - 1) % len;
+                    });
+                  },
+                  label: const Text(
+                    'Prev',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.navigate_before,
                   ),
                 ),
-                icon: const Icon(
-                  Icons.navigate_before,
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _index = (_index + 1) % len;
+                    });
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      const Text('Next',
+                          style: TextStyle(
+                            fontSize: 21,
+                          )),
+                      const Icon(Icons.navigate_next),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _index = (_index + 1) % len;
-                  });
-                },
-                child: Row(
-                  children: <Widget>[
-                    const Text('Next',
-                        style: TextStyle(
-                          fontSize: 21,
-                        )),
-                    const Icon(Icons.navigate_next),
-                  ],
-                ),
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
@@ -106,5 +110,3 @@ class _NounState extends State<Noun> {
     );
   }
 }
-
-//appbar: SearchBar()
