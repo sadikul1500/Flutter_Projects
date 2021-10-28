@@ -17,6 +17,10 @@ class _NounState extends State<Noun> {
   int _index = 0;
   late int len;
 
+  _NounState() {
+    _index = 0;
+  }
+
   @override
   void initState() {
     names = nameList.getList();
@@ -57,7 +61,7 @@ class _NounState extends State<Noun> {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             NounCard(name: names.elementAt(_index)),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -100,7 +104,9 @@ class _NounState extends State<Noun> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/nounForm');
+        },
         icon: const Icon(Icons.add),
         label: const Text('Add a Noun',
             style: TextStyle(
