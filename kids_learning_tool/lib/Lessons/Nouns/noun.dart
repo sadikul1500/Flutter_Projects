@@ -42,7 +42,7 @@ class _NounState extends State<Noun> {
   void initState() {
     names = nameList.getList();
     len = names.length;
-<<<<<<< HEAD
+
     _nounCard();
     super.initState();
 
@@ -56,10 +56,9 @@ class _NounState extends State<Noun> {
   Future loadData() async {
     names = nameList.getList(); // load your data from SharedPreferences
     return names[_index].imgList;
-=======
+
     _index = 0;
     super.initState();
->>>>>>> 26fe921e79c117784b86eb4f49ca1d8111aa910f
   }
 
   @override
@@ -93,12 +92,12 @@ class _NounState extends State<Noun> {
           crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-<<<<<<< HEAD
+
             //NounCard(name: names.elementAt(_index)),
             _nounCard(),
-=======
+
             NounCard(name: names.elementAt(_index)),
->>>>>>> 26fe921e79c117784b86eb4f49ca1d8111aa910f
+
             const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -123,11 +122,6 @@ class _NounState extends State<Noun> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-<<<<<<< HEAD
-                      print(names[0].imgList);
-                      print(56);
-=======
->>>>>>> 26fe921e79c117784b86eb4f49ca1d8111aa910f
                       _index = (_index + 1) % len;
                     });
                   },
