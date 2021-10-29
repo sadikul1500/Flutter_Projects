@@ -9,7 +9,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Learning Tool for kids'),
+        title: const Text('Learning Tool for Special kids'),
         backgroundColor: Colors.amberAccent[800],
         centerTitle: true,
         elevation: 0,

@@ -1,6 +1,36 @@
-class Name {
-  String text;
-  String meaning;
+import 'dart:async';
+import 'dart:io';
 
-  Name(this.text, this.meaning);
+class Name {
+  late String text;
+  late String meaning;
+  late String dir;
+  List<String> imgList = [];
+
+  Name(this.text, this.meaning, this.dir) {
+    listDir(dir).then((data) {
+      imgList = data;
+    });
+  }
+
+  List<String> getImgList() {
+    return imgList;
+  }
+
+  Future listDir(String folderPath) async {
+    var directory = Directory(folderPath);
+    //print(directory);
+
+    var exists = await directory.exists();
+    if (exists) {
+      directory
+          .list(recursive: true, followLinks: false)
+          .listen((FileSystemEntity entity) {
+        String path = entity.path.replaceAll('\\', '/');
+        imgList.add(path);
+      });
+    }
+
+    return imgList;
+  }
 }
