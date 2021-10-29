@@ -54,11 +54,11 @@ class _NounState extends State<Noun> {
   }
 
   Future loadData() async {
-    names = nameList.getList(); // load your data from SharedPreferences
+    names = await nameList.getList(); // load your data from SharedPreferences
     return names[_index].imgList;
 
-    _index = 0;
-    super.initState();
+    //_index = 0;
+    //super.initState();
   }
 
   @override
@@ -92,11 +92,10 @@ class _NounState extends State<Noun> {
           crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             //NounCard(name: names.elementAt(_index)),
             _nounCard(),
 
-            NounCard(name: names.elementAt(_index)),
+            //NounCard(name: names.elementAt(_index)),
 
             const SizedBox(height: 10.0),
             Row(
