@@ -13,6 +13,10 @@ void main() {
       '/home': (context) => Home(),
       '/noun': (context) => Noun(),
       '/nounForm': (context) => NounForm(),
+<<<<<<< HEAD
+=======
+      /
+>>>>>>> 26fe921e79c117784b86eb4f49ca1d8111aa910f
     },
   ));
 }

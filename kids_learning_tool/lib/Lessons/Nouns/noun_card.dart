@@ -49,9 +49,13 @@ class _NounCardState extends State<NounCard> {
                   autoPlayAnimationDuration: const Duration(milliseconds: 900),
                   viewportFraction: 0.8,
                 ),
+<<<<<<< HEAD
                 items: widget.name.getImgList().map((item) {
                   print('');
                   setState(() {});
+=======
+                items: widget.name.imgList.map((item) {
+>>>>>>> 26fe921e79c117784b86eb4f49ca1d8111aa910f
                   return Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Container(
