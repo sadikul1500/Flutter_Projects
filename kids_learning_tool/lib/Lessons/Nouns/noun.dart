@@ -17,21 +17,14 @@ class _NounState extends State<Noun> {
   int _index = 0;
   late int len;
   List<String> imageList = [];
-  //Widget _card = const CircularProgressIndicator();
 
   Widget _nounCard() {
     if (imageList.isEmpty) {
-      // setState(() {
-      //   //names = nameList.getList();
-      //   _card = const CircularProgressIndicator();
-      // });
       loadData();
       return const CircularProgressIndicator();
     } else {
       return NounCard(name: names.elementAt(_index));
     }
-
-    //return _card;
   }
 
   _NounState() {
@@ -54,11 +47,9 @@ class _NounState extends State<Noun> {
   }
 
   Future loadData() async {
-    names = await nameList.getList(); // load your data from SharedPreferences
+    await Future.delayed(const Duration(milliseconds: 300));
+    names = nameList.getList(); // load your data from SharedPreferences
     return names[_index].imgList;
-
-    //_index = 0;
-    //super.initState();
   }
 
   @override
