@@ -29,6 +29,7 @@ class _NounState extends State<Noun> {
 
   _NounState() {
     _index = 0;
+    //nameList = NameList();
   }
 
   @override
@@ -57,6 +58,10 @@ class _NounState extends State<Noun> {
     }
     return names[_index].imgList;
   }
+
+  // Future loading() async {
+  //   //await Future.delayed(const Duration(milliseconds: 100));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +106,7 @@ class _NounState extends State<Noun> {
                 ElevatedButton.icon(
                   onPressed: () {
                     setState(() {
+                      //loading();
                       _index = (_index - 1) % len;
                     });
                   },
@@ -118,6 +124,7 @@ class _NounState extends State<Noun> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
+                      //loading();
                       _index = (_index + 1) % len;
                     });
                   },
