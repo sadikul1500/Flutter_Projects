@@ -33,14 +33,11 @@ class NameList {
       final ln = line.split('; ');
       names.add(Name(ln[0], ln[1], ln[2]));
     }
-    // print(100);
-    // print(lines);
-    // print(120);
-    // print(names);
   }
 
-  void addNoun(String text, String meaning, String dir) {
+  Future addNoun(String text, String meaning, String dir) async {
     names.add(Name(text, meaning, dir));
+    await _write(text, meaning, dir);
   }
 
   List<Name> getList() {
@@ -58,8 +55,8 @@ class NameList {
 
     // Write the file
     String line = text + '; ' + meaning + '; ' + dir;
-    addNoun(text, meaning, dir);
-    return file.writeAsString(line, mode: FileMode.append);
+    //addNoun(text, meaning, dir);
+    return file.writeAsString('\n$line', mode: FileMode.append);
   }
 
   Future _read() async {
