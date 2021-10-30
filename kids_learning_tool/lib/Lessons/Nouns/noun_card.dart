@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -19,8 +21,11 @@ class _NounCardState extends State<NounCard> {
 
   @override
   void initState() {
-    activateIndex = 0;
-    index = 0;
+    setState(() {
+      activateIndex = 0;
+      index = 0;
+    });
+
     super.initState();
   }
 
@@ -54,7 +59,7 @@ class _NounCardState extends State<NounCard> {
               width: 600,
               child: CarouselSlider.builder(
                 carouselController: _controller,
-                itemCount: widget.name.getImgList().length,
+                itemCount: images.length,
                 options: CarouselOptions(
                   height: 385.0,
                   initialPage: 0,
@@ -69,12 +74,12 @@ class _NounCardState extends State<NounCard> {
                   autoPlayAnimationDuration: const Duration(milliseconds: 1400),
                   viewportFraction: 0.8,
                   onPageChanged: (index, reason) =>
-                      setState(() => activateIndex = index),
+                      setState(() => activateIndex = index % images.length),
                 ),
                 itemBuilder: (context, index, realIndex) {
-                  final img = images[index];
+                  final img = images[index % images.length];
 
-                  return buildImage(img, index);
+                  return buildImage(img, index % images.length);
                 },
               ),
             ),
@@ -90,8 +95,8 @@ class _NounCardState extends State<NounCard> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15),
       color: Colors.grey,
-      child: Image.asset(
-        img,
+      child: Image.file(
+        File(img),
         fit: BoxFit.fill,
       ),
     );
