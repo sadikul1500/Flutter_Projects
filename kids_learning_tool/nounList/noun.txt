@@ -1,0 +1,4 @@
+Umbrella; ছাতা; assets/nouns/Umbrella
+Apple; আপেল; assets/nouns/Apple
+Car; গাড়ি; assets/nouns/Car
+Deer; হরিণ; assets/nouns/Deer
