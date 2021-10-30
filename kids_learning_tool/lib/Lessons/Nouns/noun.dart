@@ -32,7 +32,7 @@ class _NounState extends State<Noun> {
   }
 
   @override
-  void initState() {
+  initState() {
     names = nameList.getList();
     len = names.length;
 
@@ -42,13 +42,19 @@ class _NounState extends State<Noun> {
     loadData().then((data) {
       setState(() {
         imageList = data;
+        len = names.length;
       });
     });
   }
 
   Future loadData() async {
     await Future.delayed(const Duration(milliseconds: 300));
-    names = nameList.getList(); // load your data from SharedPreferences
+    names = nameList.getList();
+    // print(1233);
+    // print(names);
+    if (names.isEmpty) {
+      return [];
+    }
     return names[_index].imgList;
   }
 
