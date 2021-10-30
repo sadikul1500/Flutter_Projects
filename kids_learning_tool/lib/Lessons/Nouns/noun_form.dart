@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 
 //void main() => runApp(const MyApp());
 
@@ -43,6 +44,9 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedFiles = '';
+  TextEditingController noun = TextEditingController();
+  TextEditingController meaning = TextEditingController();
+  List<File> files = [];
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +62,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             //mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
+                controller: noun,
                 decoration: const InputDecoration(
                   hintText: 'Enter a Noun',
                   labelText: 'Noun',
@@ -80,6 +85,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                controller: meaning,
                 decoration: const InputDecoration(
                   hintText: 'Enter Meaning of the noun',
                   labelText: 'Meaning',
@@ -124,6 +130,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       // the form is invalid.
                       if (_formKey.currentState!.validate()) {
                         // Process data.
+                        saveImage();
+                        Navigator.pushNamed(context, '/home');
                       }
                     },
                     child: const Text(
@@ -146,11 +154,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
     );
 
     if (result != null) {
-      List<File> files = result.paths.map((path) => File(path!)).toList();
+      files = result.paths.map((path) => File(path!)).toList();
       //PlatformFile file = result.files.first;
 
       setState(() {
@@ -166,5 +174,28 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     } else {
       // User canceled the picker
     }
+  }
+
+  Future saveImage() async {
+    final imagePath =
+        'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+    final newDir = await Directory(imagePath).create(recursive: true);
+
+    for (File file in files) {
+      //print(100);
+      //print(newDir);
+      //print(newDir.path);
+      //print('${newDir.path}/${file.path.split('\\').last}');
+      //print(300);
+      //print('$newDir/${file.path.split('\\').last}');
+      await file.copy('${newDir.path}/${file.path.split('\\').last}');
+    }
+
+    createNoun(imagePath);
+  }
+
+  void createNoun(String dir) {
+    NameList nameList = NameList();
+    nameList.addNoun(noun.text, meaning.text, dir);
   }
 }
