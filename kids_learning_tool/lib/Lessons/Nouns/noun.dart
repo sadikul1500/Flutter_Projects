@@ -23,7 +23,8 @@ class _NounState extends State<Noun> {
       loadData();
       return const CircularProgressIndicator();
     } else {
-      return NounCard(name: names.elementAt(_index));
+      //print('noun card is not invoked 1...');
+      return NounCard(names.elementAt(_index), 0);
     }
   }
 
@@ -34,8 +35,8 @@ class _NounState extends State<Noun> {
 
   @override
   initState() {
-    names = nameList.getList();
-    len = names.length;
+    // names = nameList.getList();
+    // len = names.length;
 
     _nounCard();
     super.initState();
@@ -73,9 +74,14 @@ class _NounState extends State<Noun> {
         actions: [
           IconButton(
               onPressed: () async {
+                // print(500);
+                // names.forEach((element) {
+                //   print(element.text);
+                // });
+                // print(names.length);
                 var result = await showSearch<String>(
                   context: context,
-                  delegate: CustomDelegate(),
+                  delegate: CustomDelegate(names),
                 );
                 setState(() {
                   _index = max(
@@ -145,7 +151,10 @@ class _NounState extends State<Noun> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pushNamed(context, '/nounForm');
+          Navigator.pushNamed(
+              context, '/nounForm'); //.then((_) => setState(() {
+          //       Noun();
+          //     }));
         },
         icon: const Icon(Icons.add),
         label: const Text('Add a Noun',
