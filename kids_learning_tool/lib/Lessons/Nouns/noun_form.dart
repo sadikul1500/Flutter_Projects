@@ -46,104 +46,124 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   String _selectedFiles = '';
   TextEditingController noun = TextEditingController();
   TextEditingController meaning = TextEditingController();
+
   List<File> files = [];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(250, 200, 250, 0),
-      color: Colors.white.withOpacity(0.80),
-      child: Align(
-        alignment: const Alignment(0, 0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: noun,
-                decoration: const InputDecoration(
-                  hintText: 'Enter a Noun',
-                  labelText: 'Noun',
-                  labelStyle: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 17,
-                      fontFamily: 'AvenirLight'),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueAccent),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: meaning,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Meaning of the noun',
-                  labelText: 'Meaning',
-                  labelStyle: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 17,
-                      fontFamily: 'AvenirLight'),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueAccent),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              OutlinedButton(
-                  onPressed: () {
-                    _openFileExplorer();
-                  },
-                  child: const Text(
-                    'Select Images',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
+    return WillPopScope(
+      onWillPop: () {
+        print(
+            'Backbutton pressed (device or appbar button), do whatever you want.');
+
+        //trigger leaving and use own data
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pushNamed(context, '/noun');
+
+        //we need to return a future
+        return Future.value(false);
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(250, 200, 250, 0),
+        color: Colors.white.withOpacity(0.80),
+        child: Align(
+          alignment: const Alignment(0, 0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: noun,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter a Noun',
+                    labelText: 'Noun',
+                    labelStyle: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 17,
+                        fontFamily: 'AvenirLight'),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueAccent),
                     ),
-                  )),
-              Text(_selectedFiles),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(100, 50), elevation: 3),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: meaning,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter Meaning of the noun',
+                    labelText: 'Meaning',
+                    labelStyle: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 17,
+                        fontFamily: 'AvenirLight'),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                OutlinedButton(
                     onPressed: () {
-                      // Validate will return true if the form is valid, or false if
-                      // the form is invalid.
-                      if (_formKey.currentState!.validate()) {
-                        // Process data.
-                        saveImage();
-                        Navigator.pushNamed(context, '/home');
-                      }
+                      _openFileExplorer();
                     },
                     child: const Text(
-                      'Submit',
+                      'Select Images',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
+                Text(_selectedFiles),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(100, 50), elevation: 3),
+                      onPressed: () {
+                        // Validate will return true if the form is valid, or false if
+                        // the form is invalid.
+                        if (_formKey.currentState!.validate()) {
+                          // Process data.
+                          saveImage();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildPopupDialog(context),
+                          );
+                          //Navigator.pushNamed(context, '/home');
+                        }
+                      },
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -197,5 +217,32 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void createNoun(String dir) {
     NameList nameList = NameList();
     nameList.addNoun(noun.text, meaning.text, dir);
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('Info'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text("Saved Successfully"),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            setState(() {
+              noun.clear();
+              meaning.clear();
+              _selectedFiles = '';
+            });
+            Navigator.of(context).pop();
+          },
+          //color: Theme.of(context).primaryColor,
+          child: const Text('Ok'),
+        ),
+      ],
+    );
   }
 }
