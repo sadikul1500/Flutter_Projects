@@ -7,7 +7,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class NounCard extends StatefulWidget {
   final Name name;
-  NounCard({required this.name});
+  final int ind;
+  NounCard(this.name, this.ind);
 
   @override
   State<NounCard> createState() => _NounCardState();
@@ -21,13 +22,23 @@ class _NounCardState extends State<NounCard> {
 
   @override
   void initState() {
-    setState(() {
-      activateIndex = 0;
-      index = 0;
-    });
+    activateIndex = widget.ind;
+    // print('hehehehehehe');
+    // print(activateIndex);
 
     super.initState();
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   print('kaj korsi mama');
+  //   activateIndex = widget.ind;
+  //   //images = widget.name.getImgList();
+  //   print('activate index dekho...');
+  //   print(activateIndex);
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,25 +72,29 @@ class _NounCardState extends State<NounCard> {
                 carouselController: _controller,
                 itemCount: images.length,
                 options: CarouselOptions(
-                  height: 385.0,
-                  initialPage: 0,
-                  enlargeCenterPage: true,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height,
-                  autoPlay: true,
-                  //pageSnapping: false,
-                  aspectRatio: 16 / 9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: true,
-                  autoPlayInterval: const Duration(seconds: 2),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 1400),
-                  viewportFraction: 0.8,
-                  onPageChanged: (index, reason) =>
-                      setState(() => activateIndex = index % images.length),
-                ),
+                    height: 385.0,
+                    initialPage: 0,
+                    enlargeCenterPage: true,
+                    enlargeStrategy: CenterPageEnlargeStrategy.height,
+                    autoPlay: true,
+                    //pageSnapping: false,
+                    aspectRatio: 16 / 9,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: true,
+                    autoPlayInterval: const Duration(seconds: 2),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 1400),
+                    viewportFraction: 0.8,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        //images = widget.name.getImgList();
+                        activateIndex = index;
+                      });
+                    }),
                 itemBuilder: (context, index, realIndex) {
-                  final img = images[index % images.length];
+                  final img = images[index];
 
-                  return buildImage(img, index % images.length);
+                  return buildImage(img, index);
                 },
               ),
             ),
@@ -103,7 +118,7 @@ class _NounCardState extends State<NounCard> {
   }
 
   Widget buildIndicator() => AnimatedSmoothIndicator(
-        activeIndex: activateIndex % images.length,
+        activeIndex: activateIndex,
         count: images.length,
         effect: const SwapEffect(
           activeDotColor: Colors.blue,
