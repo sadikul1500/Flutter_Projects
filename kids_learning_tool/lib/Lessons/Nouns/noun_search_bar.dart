@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
 //import 'package:kids_learning_tool/Lessons/Nouns/noun.dart';
-
+//thanks Ryan
 class CustomDelegate extends SearchDelegate<String> {
   NameList nameList = NameList();
-  // List<String> data = [];
+  List<String> data = [];
   List<Name> names = [];
   //Noun nouns = Noun();
 
@@ -16,9 +16,9 @@ class CustomDelegate extends SearchDelegate<String> {
     // });
     //names = nouns.names
     // print(names.length);
-    // for (Name name in names) {
-    //   data.add(name.text);
-    // }
+    for (Name name in names) {
+      data.add(name.text);
+    }
     // print(data);
     //print('reached');
   }
@@ -49,21 +49,21 @@ class CustomDelegate extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     // print('building.......');
-    // List<String> listToShow;
-    // if (query.isNotEmpty) {
-    //   listToShow = data
-    //       .where((e) =>
-    //           e.toLowerCase().contains(query.toLowerCase()) &&
-    //           e.toLowerCase().startsWith(query.toLowerCase()))
-    //       .toList();
-    // } else {
-    //   listToShow = data;
-    // }
+    List<String> listToShow;
+    if (query.isNotEmpty) {
+      listToShow = data
+          .where((e) =>
+              e.toLowerCase().contains(query.toLowerCase()) &&
+              e.toLowerCase().startsWith(query.toLowerCase()))
+          .toList();
+    } else {
+      listToShow = data;
+    }
 
     return ListView.builder(
-      itemCount: names.length,
+      itemCount: listToShow.length,
       itemBuilder: (_, i) {
-        var noun = names[i].text;
+        var noun = listToShow[i];
         // print('calling listview builder...');
         return ListTile(
           title: Text(noun),
