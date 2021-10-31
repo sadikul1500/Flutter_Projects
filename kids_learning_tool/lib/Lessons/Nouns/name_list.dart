@@ -10,22 +10,16 @@ class NameList {
 
   NameList() {
     //await Future.delayed(const Duration(milliseconds: 500));
-    loadData().then((data) {
-      createNames();
-    });
-    //createNames();
-
-    // names = [
-    //   Name('Umbrella', 'ছাতা', 'assets/nouns/Umbrella'),
-    //   Name('Apple', 'আপেল', 'assets/nouns/Apple'),
-    //   Name('Car', 'গাড়ি', 'assets/nouns/Car'),
-    //   Name('Deer', 'হরিণ', 'assets/nouns/Deer'),
-    // ];
+    // loadData().then((data) {
+    //   createNames();
+    // });
+    loadData();
   }
 
   Future loadData() async {
     //await Future.delayed(const Duration(milliseconds: 500));
     await _read();
+    createNames();
   }
 
   void createNames() {
