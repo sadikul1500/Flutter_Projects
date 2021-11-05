@@ -1,4 +1,7 @@
-Umbrella; ছাতা; assets/nouns/Umbrella
-Apple; আপেল; assets/nouns/Apple
-Car; গাড়ি; assets/nouns/Car
-Deer; হরিণ; assets/nouns/Deer
+Umbrella; ছাতা; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Umbrella; C:/Users/Admin/Downloads/preamble10.wav
+Apple; আপেল; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Apple; C:/Users/Admin/Downloads/test.wav
+Car; গাড়ি; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Car; C:/Users/Admin/Downloads/gettysburg.wav
+Deer; হরিণ; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Deer; C:/Users/Admin/Downloads/test.wav
+Pen; কলম; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Pen; C:/Users/Admin/Downloads/preamble10.wav
+Al-Quran; মুসলিমদের পবিত্র ধর্মীয় গ্রন্থ ; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Al-Quran; C:/Users/Admin/Downloads/test.wav
+Flower; ফুল; D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/Flower; C:/Users/Admin/Downloads/gettysburg.wav
