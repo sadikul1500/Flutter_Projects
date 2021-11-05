@@ -5,9 +5,10 @@ class Name {
   late String text;
   late String meaning;
   late String dir;
+  late String audio;
   List<String> imgList = [];
 
-  Name(this.text, this.meaning, this.dir) {
+  Name(this.text, this.meaning, this.dir, this.audio) {
     listDir(dir).then((data) {
       imgList = data;
     });
