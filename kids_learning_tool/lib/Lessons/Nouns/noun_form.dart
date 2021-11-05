@@ -44,10 +44,13 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedFiles = '';
+  String _audioFile = '';
   TextEditingController noun = TextEditingController();
   TextEditingController meaning = TextEditingController();
 
   List<File> files = [];
+  late File audio;
+  String path = '';
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +136,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       ),
                     )),
                 Text(_selectedFiles),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                    onPressed: () {
+                      _selectAudio();
+                    },
+                    child: const Text(
+                      'Select Audio',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
+                Text(_audioFile),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -145,6 +161,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         if (_formKey.currentState!.validate()) {
                           // Process data.
                           saveImage();
+                          saveAudio();
+                          createNoun(
+                              path, '$path/${audio.path.split('\\').last}');
                           showDialog(
                             context: context,
                             builder: (BuildContext context) =>
@@ -168,6 +187,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ),
       ),
     );
+  }
+
+  void _selectAudio() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav'],
+    );
+
+    if (result != null) {
+      //File file = File(result.files.single.path);
+      setState(() {
+        audio = File(result.files.single.path!);
+        _audioFile = result.files.single.path!.split('\\').last;
+      });
+    } else {
+      //user canceled it
+    }
   }
 
   void _openFileExplorer() async {
@@ -197,9 +234,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   Future saveImage() async {
-    final imagePath =
+    path =
         'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-    final newDir = await Directory(imagePath).create(recursive: true);
+    final newDir = await Directory(path).create(recursive: true);
 
     for (File file in files) {
       //print(100);
@@ -211,12 +248,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       await file.copy('${newDir.path}/${file.path.split('\\').last}');
     }
 
-    createNoun(imagePath);
+    //createNoun(imagePath);
   }
 
-  void createNoun(String dir) {
+  Future saveAudio() async {
+    // final audioPath =
+    //     'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+    //final newDir = await Directory(imagePath).create(recursive: true);
+    await audio.copy('$path/${audio.path.split('\\').last}');
+  }
+
+  void createNoun(String dir, String audio) {
     NameList nameList = NameList();
-    nameList.addNoun(noun.text, meaning.text, dir);
+    nameList.addNoun(noun.text, meaning.text, dir, audio);
   }
 
   Widget _buildPopupDialog(BuildContext context) {
