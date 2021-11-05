@@ -9,15 +9,10 @@ class NameList {
   List<String> lines = [];
 
   NameList() {
-    //await Future.delayed(const Duration(milliseconds: 500));
-    // loadData().then((data) {
-    //   createNames();
-    // });
     loadData();
   }
 
   Future loadData() async {
-    //await Future.delayed(const Duration(milliseconds: 500));
     await _read();
     createNames();
   }
@@ -25,13 +20,13 @@ class NameList {
   void createNames() {
     for (String line in lines) {
       final ln = line.split('; ');
-      names.add(Name(ln[0], ln[1], ln[2]));
+      names.add(Name(ln[0], ln[1], ln[2], ln[3]));
     }
   }
 
-  Future addNoun(String text, String meaning, String dir) async {
-    names.add(Name(text, meaning, dir));
-    await _write(text, meaning, dir);
+  Future addNoun(String text, String meaning, String dir, String audio) async {
+    names.add(Name(text, meaning, dir, audio));
+    await _write(text, meaning, dir, audio);
   }
 
   List<Name> getList() {
@@ -43,12 +38,13 @@ class NameList {
   }
 
   //write read write operations
-  Future<File> _write(String text, String meaning, String dir) async {
+  Future<File> _write(
+      String text, String meaning, String dir, String audio) async {
     // final file = await File(
     //     'D:/Sadi/FlutterProjects/kids_learning_tool/nounList/noun.txt');
 
     // Write the file
-    String line = text + '; ' + meaning + '; ' + dir;
+    String line = text + '; ' + meaning + '; ' + dir + '; ' + audio;
     //addNoun(text, meaning, dir);
     return file.writeAsString('\n$line', mode: FileMode.append);
   }
