@@ -1,164 +1,185 @@
-import 'dart:math';
-
+import 'dart:io';
+//import 'package:flutter_audio_desktop/flutter_audio_desktop.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_libwinmedia/just_audio_libwinmedia.dart';
 import 'package:flutter/material.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/noun_card.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/noun_search_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Noun extends StatefulWidget {
+class NounCard extends StatefulWidget {
+  final Name name;
+  //final int ind;
+  final AudioPlayer audioPlayer;
+  NounCard(this.name, this.audioPlayer);
+
   @override
-  State<Noun> createState() => _NounState();
+  State<NounCard> createState() => _NounCardState();
 }
 
-class _NounState extends State<Noun> {
-  NameList nameList = NameList();
-  late List<Name> names;
-  int _index = 0;
-  late int len;
-  List<String> imageList = [];
+class _NounCardState extends State<NounCard> {
+  AudioPlayer audioPlayer = AudioPlayer(); // = widget.audioPlayer;
 
-  Widget _nounCard() {
-    if (imageList.isEmpty) {
-      loadData();
-      return const CircularProgressIndicator();
-    } else {
-      print('noun card is not invoked 1...');
-      return NounCard(names.elementAt(_index), 0);
-    }
-  }
-
-  _NounState() {
-    _index = 0;
-    //nameList = NameList();
-  }
+  int index = 0;
+  int activateIndex = 0;
+  late List<String> images;
+  final CarouselController _controller = CarouselController();
 
   @override
-  initState() {
-    // names = nameList.getList();
-    // len = names.length;
+  void initState() {
+    //activateIndex = widget.ind;
+    // print('hehehehehehe');
+    // print(activateIndex);
 
-    _nounCard();
     super.initState();
-
-    loadData().then((data) {
-      setState(() {
-        imageList = data;
-        len = names.length;
-      });
-    });
   }
-
-  Future loadData() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    names = nameList.getList();
-    // print(1233);
-    // print(names);
-    if (names.isEmpty) {
-      return [];
-    }
-    return names[_index].imgList;
-  }
-
-  // Future loading() async {
-  //   //await Future.delayed(const Duration(milliseconds: 100));
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Noun'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () async {
-                // print(500);
-                // names.forEach((element) {
-                //   print(element.text);
-                // });
-                // print(names.length);
-                var result = await showSearch<String>(
-                  context: context,
-                  delegate: CustomDelegate(names),
-                );
-                setState(() {
-                  _index = max(
-                      0, names.indexWhere((element) => element.text == result));
-                  //_result = result;
-                });
-              }, //Navigator.pushNamed(context, '/searchPage'),
-              // onPressed: () => Navigator.of(context)
-              //     .push(MaterialPageRoute(builder: (_) => SearchPage())),
-              icon: const SafeArea(child: Icon(Icons.search_sharp)))
-        ],
-      ),
-      body: SingleChildScrollView(
+    images = widget.name.getImgList();
+    audioPlayer = widget.audioPlayer;
+    playAudioFile();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
         child: Column(
-          //resizeTo
-          crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //NounCard(name: names.elementAt(_index)),
-            _nounCard(),
-
-            //NounCard(name: names.elementAt(_index)),
-
+            Text(
+              'Noun: ${widget.name.text}',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      //loading();
-                      _index = (_index - 1) % len;
-                    });
-                  },
-                  label: const Text(
-                    'Prev',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.navigate_before,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      //loading();
-                      _index = (_index + 1) % len;
-                    });
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      const Text('Next',
-                          style: TextStyle(
-                            fontSize: 21,
-                          )),
-                      const Icon(Icons.navigate_next),
-                    ],
-                  ),
-                ),
-              ],
-            )
+            Text(
+              'Meaning: ${widget.name.meaning}',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 400,
+              width: 600,
+              child: CarouselSlider.builder(
+                carouselController: _controller,
+                itemCount: images.length,
+                options: CarouselOptions(
+                    height: 385.0,
+                    initialPage: 0,
+                    enlargeCenterPage: true,
+                    enlargeStrategy: CenterPageEnlargeStrategy.height,
+                    autoPlay: true,
+                    //pageSnapping: false,
+                    aspectRatio: 16 / 9,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: true,
+                    autoPlayInterval: const Duration(seconds: 2),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 1400),
+                    viewportFraction: 0.8,
+                    pauseAutoPlayOnManualNavigate: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        //images = widget.name.getImgList();
+                        activateIndex = index;
+                      });
+                    }),
+                itemBuilder: (context, index, realIndex) {
+                  final img = images[index];
+
+                  return buildImage(img, index);
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+            buildIndicator(),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.pushNamed(context, '/nounForm');
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Add a Noun',
-            style: TextStyle(
-              fontSize: 18,
-            )),
+    );
+  }
+
+  Widget buildImage(String img, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      color: Colors.grey,
+      child: Image.file(
+        File(img),
+        fit: BoxFit.fill,
+        filterQuality: FilterQuality.high,
       ),
     );
   }
+
+  Widget buildIndicator() => AnimatedSmoothIndicator(
+        activeIndex: activateIndex,
+        count: images.length,
+        effect: const SwapEffect(
+          activeDotColor: Colors.blue,
+          dotColor: Colors.black12,
+          dotHeight: 10,
+          dotWidth: 10,
+        ),
+        onDotClicked: animateToSlide,
+      );
+
+  void animateToSlide(int index) {
+    // if (index > images.length) {
+    //   index = 0;
+    // }
+    try {
+      _controller.animateToPage(index);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void playAudioFile() {
+    //_audioPlayer.setUrl(url);
+    // _audioPlayer.setFilePath('C:/Users/Admin/Downloads/text.wav',
+    //     preload: false);
+    audioPlayer.play();
+  }
 }
+
+// @override
+// void didChangeDependencies() {
+//   print('kaj korsi mama');
+//   activateIndex = widget.ind;
+//   //images = widget.name.getImgList();
+//   print('activate index dekho...');
+//   print(activateIndex);
+//   // TODO: implement didChangeDependencies
+//   super.didChangeDependencies();
+// }
+
+//   void playAudioFile() {
+//     // Load audio file.
+//     // audioPlayer
+//     //     .load(AudioSource(file: File('C:/Users/Admin/Downloads/test.wav')));
+//     var audioPlayer = AudioPlayer(id: 0)
+//       ..stream.listen(
+//         (Audio audio) {
+//           // Listen to playback events.
+//         },
+//       );
+//     audioPlayer.load(
+//       AudioSource.fromFile(
+//         File('C:/Users/Admin/Downloads/test.wav'),
+//       ),
+//     );
+
+// // Start playing loaded audio file.
+//     audioPlayer.play();
+
+// // Get audio duration.
+//     //print('Duration Of Track: ${audioPlayer.getDuration()}');
+
+// // Change playback volume.
+//     audioPlayer.setVolume(0.8);
+//     print('Changed volume to 80%.');
+//   }
