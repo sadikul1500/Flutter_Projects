@@ -2,12 +2,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_libwinmedia/just_audio_libwinmedia.dart';
+//import 'package:just_audio_libwinmedia/just_audio_libwinmedia.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/noun_card.dart';
+//import 'package:kids_learning_tool/Lessons/Nouns/noun_card.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/noun_search_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 //import 'package:kplayer/kplayer.dart';
@@ -20,22 +21,24 @@ class Noun extends StatefulWidget {
 class _NounState extends State<Noun> {
   NameList nameList = NameList();
   late List<Name> names;
+  List<Name> assignToStudent = [];
   int _index = 0;
   late int len;
   List<String> imageList = [];
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   PlayerState? _state;
   final CarouselController _controller = CarouselController();
   int activateIndex = 0;
 
   bool _isPlaying = false;
   bool _isPaused = false;
+  bool _checkbox = false;
 
   //late Player player;
 
   Widget _nounCard() {
     if (imageList.isEmpty) {
-      print('if..');
+      //print('if..');
       loadData();
       return const CircularProgressIndicator();
     } else if (_state?.processingState != ProcessingState.ready) {
@@ -44,8 +47,8 @@ class _NounState extends State<Noun> {
       print('audio called');
       return const CircularProgressIndicator();
     } else {
-      print('noun card is not invoked 1...');
-      print(_index);
+      //print('noun card is not invoked 1...');
+      //print(_index);
       // setState(() {  //not needed here
       //   _audioPlayer.play();
       // });
@@ -60,9 +63,9 @@ class _NounState extends State<Noun> {
   @override
   initState() {
     loadData().then((List<String> value) {
-      print('then1');
+      //print('then1');
       loadAudio().then((value) {
-        print('then2');
+        //print('then2');
         _nounCard();
       });
     });
@@ -82,6 +85,7 @@ class _NounState extends State<Noun> {
     //     // _audioPlayer = data;
     //   });
     // });
+    //_audioPlayer.playingStream;
     _audioPlayer.playerStateStream.listen((state) {
       setState(() {
         _state = state;
@@ -98,18 +102,18 @@ class _NounState extends State<Noun> {
     // print(names);
 
     if (names.isEmpty) {
-      print('didn\'t loaded');
+      //print('didn\'t loaded');
       await Future.delayed(const Duration(milliseconds: 240));
       return [];
     }
 
-    for (Name name in names) {
-      print(name.text + ' ' + name.audio);
-    }
+    // for (Name name in names) {
+    //   print(name.text + ' ' + name.audio);
+    // }
 
     len = names.length;
     imageList = names[_index].imgList;
-    print('image List created');
+    //print('image List created');
     return imageList;
     //return names[_index].imgList;
   }
@@ -117,12 +121,13 @@ class _NounState extends State<Noun> {
   Future loadAudio() async {
     //await Future.delayed(const Duration(milliseconds: 20)); //not needed
     //print(names[_index].audio);
-    print('index ' + '$_index' + ' length ' + '${names.length}');
+    //print('index...... ' + '$_index' + ' length ' + '${names.length}');
     await _audioPlayer.setAudioSource(
         AudioSource.uri(Uri.file(names[_index].audio)),
         initialPosition: Duration.zero,
         preload: true);
-    print('load audio function done');
+
+    ///print('load audio function done');
 
     _audioPlayer.setLoopMode(LoopMode.one);
     return _audioPlayer;
@@ -132,8 +137,8 @@ class _NounState extends State<Noun> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        print(
-            'Backbutton pressed (device or appbar button), do whatever you want.');
+        // print(
+        //     'Backbutton pressed (device or appbar button), do whatever you want.');
 
         //trigger leaving and use own data
         //
@@ -218,16 +223,19 @@ class _NounState extends State<Noun> {
                   ),
                   const SizedBox(width: 30),
                   IconButton(
-                    icon: (_isPlaying)
-                        ? Icon(Icons.pause_circle_filled)
-                        : Icon(Icons.play_circle_outline),
-                    iconSize: 40,
-                    onPressed: () => _isPlaying
-                        ? stop()
-                        : _isPaused
-                            ? play()
-                            : stop(),
-                  ),
+                      icon: (_isPlaying)
+                          ? const Icon(Icons.pause_circle_filled)
+                          : const Icon(Icons.play_circle_outline),
+                      iconSize: 40,
+                      onPressed: () {
+                        if (_isPlaying) {
+                          print('---------is playing true-------');
+                          stop();
+                        } else {
+                          print('-------is playing false-------');
+                          play();
+                        }
+                      }),
                   const SizedBox(width: 30),
                   ElevatedButton(
                     onPressed: () {
@@ -256,31 +264,51 @@ class _NounState extends State<Noun> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            // setState(() {
-            stop();
-            // });
-            // Navigator.pushNamed(
-            //     context, '/nounForm').then((value) { setState(() {}); //.then((_) => setState(() {
-            //       Noun();
-            //     }));
-            Navigator.of(context)
-                .pushNamed('/nounForm')
-                .then((value) => setState(() {}));
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('Add a Noun',
-              style: TextStyle(
-                fontSize: 18,
-              )),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton.extended(
+              onPressed: () {
+                stop();
+                teachStudent();
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Assign to student',
+                  style: TextStyle(
+                    fontSize: 18,
+                  )),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            FloatingActionButton.extended(
+              onPressed: () {
+                // setState(() {
+                stop();
+                // });
+                // Navigator.pushNamed(
+                //     context, '/nounForm').then((value) { setState(() {}); //.then((_) => setState(() {
+                //       Noun();
+                //     }));
+                Navigator.of(context)
+                    .pushNamed('/nounForm')
+                    .then((value) => setState(() {}));
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Add a Noun',
+                  style: TextStyle(
+                    fontSize: 18,
+                  )),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Future stop() async {
-    _audioPlayer.stop();
+    //future async
+    await _audioPlayer.stop();
     setState(() {
       _isPlaying = false;
       _isPaused = true;
@@ -288,7 +316,9 @@ class _NounState extends State<Noun> {
   }
 
   Future play() async {
-    _audioPlayer.play();
+    print('play called and ............................');
+    print(_state?.processingState);
+    await _audioPlayer.play();
     // if (result == 1) {
     setState(() {
       _isPlaying = true;
@@ -300,9 +330,9 @@ class _NounState extends State<Noun> {
   Widget nounCardWidget() {
     Name name = names.elementAt(_index);
     List<String> images = name.getImgList();
-    print('noun card widget');
-    print(_index);
-    print(name.text);
+    //print('noun card widget');
+    //print(_index);
+    //print(name.text);
 
     // setState(() {
     //   _audioPlayer.play();
@@ -333,14 +363,27 @@ class _NounState extends State<Noun> {
             SizedBox(
               height: 20,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   // ignore: prefer_const_constructors
                   //Checkbox(value: value, onChanged: onChanged),
+                  Checkbox(
+                      value: _checkbox,
+                      onChanged: (value) {
+                        setState(() {
+                          _checkbox = !_checkbox;
+                          if (_checkbox) {
+                            assignToStudent.add(names[_index]);
+                          } else {
+                            assignToStudent.remove(names[_index]);
+                          }
+                        });
+                      }),
                   IconButton(
                       onPressed: () {
                         nameList.removeItem(name.text);
                       },
-                      icon: Icon(Icons.delete))
+                      icon: const Icon(Icons.delete_forever_rounded))
                 ],
               ),
             ),
@@ -419,6 +462,62 @@ class _NounState extends State<Noun> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future teachStudent() async {
+    if (assignToStudent.isEmpty) {
+      //alert popup
+    } else {
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+      if (selectedDirectory == null) {
+        // User canceled the picker
+      } else {
+        File(selectedDirectory + '/noun.txt').createSync(recursive: true);
+        _write(File(selectedDirectory + '/noun.txt'));
+        copyImage(selectedDirectory);
+        copyAudio(selectedDirectory);
+      }
+    }
+  }
+
+  Future<void> copyAudio(String destination) async {
+    for (Name name in assignToStudent) {
+      File file = File(name.audio);
+      await file.copy(destination + '/${file.path.split('\\').last}');
+    }
+  }
+
+  Future<void> copyImage(String destination) async {
+    for (Name name in assignToStudent) {
+      String folder = name.dir.split('/').last;
+      final newDir =
+          await Directory(destination + '/$folder').create(recursive: true);
+      final oldDir = Directory(name.dir);
+
+      await for (var original in oldDir.list(recursive: false)) {
+        if (original is File) {
+          await original
+              .copy('${newDir.path}/${original.path.split('\\').last}');
+        }
+      }
+    }
+  }
+
+  Future _write(File file) async {
+    for (Name name in assignToStudent) {
+      file.writeAsString(name.text +
+          '; ' +
+          name.meaning +
+          '; ' +
+          name.dir +
+          '; ' +
+          name.audio +
+          '\n');
+    }
+    // String line = text + '; ' + meaning + '; ' + dir + '; ' + audio;
+    // //addNoun(text, meaning, dir);
+    // return file.writeAsString('\n$line', mode: FileMode.append);
   }
 
   // Future pause() async {
