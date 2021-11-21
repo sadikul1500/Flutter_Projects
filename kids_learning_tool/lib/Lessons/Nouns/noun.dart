@@ -31,8 +31,8 @@ class _NounState extends State<Noun> {
   int activateIndex = 0;
 
   bool _isPlaying = false;
-  bool _isPaused = false;
-  bool _checkbox = false;
+  //bool _isPaused = false;
+  //bool _checkbox = false;
 
   //late Player player;
 
@@ -42,9 +42,9 @@ class _NounState extends State<Noun> {
       loadData();
       return const CircularProgressIndicator();
     } else if (_state?.processingState != ProcessingState.ready) {
-      print('else if');
+      //print('else if');
       loadAudio();
-      print('audio called');
+      //print('audio called');
       return const CircularProgressIndicator();
     } else {
       //print('noun card is not invoked 1...');
@@ -63,11 +63,12 @@ class _NounState extends State<Noun> {
   @override
   initState() {
     loadData().then((List<String> value) {
-      //print('then1');
-      loadAudio().then((value) {
-        //print('then2');
-        _nounCard();
-      });
+      if (value.isNotEmpty) {
+        loadAudio().then((value) {
+          //print('then2');
+          _nounCard();
+        });
+      }
     });
     //_nounCard();
 
@@ -90,8 +91,8 @@ class _NounState extends State<Noun> {
       setState(() {
         _state = state;
       });
-      print(100);
-      print(_state?.processingState);
+      //print(100);
+      // print(_state?.processingState);
     });
     super.initState();
     //player = Player.
@@ -103,8 +104,8 @@ class _NounState extends State<Noun> {
 
     if (names.isEmpty) {
       //print('didn\'t loaded');
-      await Future.delayed(const Duration(milliseconds: 240));
-      return [];
+      await Future.delayed(const Duration(milliseconds: 150));
+      return await loadData();
     }
 
     // for (Name name in names) {
@@ -144,7 +145,7 @@ class _NounState extends State<Noun> {
         //
         stop();
         setState(() {
-          print('audio payer stopped before going back from noun.dart');
+          //print('audio payer stopped before going back from noun.dart');
           // _audioPlayer.stop();
         });
 
@@ -165,7 +166,7 @@ class _NounState extends State<Noun> {
                 onPressed: () async {
                   stop();
                   setState(() {
-                    print('stopped while clicking search ');
+                    //print('stopped while clicking search ');
                     // _audioPlayer.stop();
                   });
                   var result = await showSearch<String>(
@@ -197,7 +198,7 @@ class _NounState extends State<Noun> {
                 children: <Widget>[
                   ElevatedButton.icon(
                     onPressed: () {
-                      print('prev');
+                      //print('prev');
                       //print(_state?.processingState);
                       //_audioPlayer.stop();
                       stop();
@@ -229,17 +230,17 @@ class _NounState extends State<Noun> {
                       iconSize: 40,
                       onPressed: () {
                         if (_isPlaying) {
-                          print('---------is playing true-------');
+                          //print('---------is playing true-------');
                           stop();
                         } else {
-                          print('-------is playing false-------');
+                          //print('-------is playing false-------');
                           play();
                         }
                       }),
                   const SizedBox(width: 30),
                   ElevatedButton(
                     onPressed: () {
-                      print('next');
+                      //print('next');
                       //print(_state);
                       //_audioPlayer.stop();
                       stop();
@@ -250,12 +251,12 @@ class _NounState extends State<Noun> {
                       });
                     },
                     child: Row(
-                      children: <Widget>[
-                        const Text('Next',
+                      children: const <Widget>[
+                        Text('Next',
                             style: TextStyle(
                               fontSize: 21,
                             )),
-                        const Icon(Icons.navigate_next),
+                        Icon(Icons.navigate_next),
                       ],
                     ),
                   ),
@@ -268,6 +269,7 @@ class _NounState extends State<Noun> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton.extended(
+              heroTag: 'btn1',
               onPressed: () {
                 stop();
                 teachStudent();
@@ -279,9 +281,10 @@ class _NounState extends State<Noun> {
                   )),
             ),
             const SizedBox(
-              width: 15,
+              height: 15,
             ),
             FloatingActionButton.extended(
+              heroTag: 'btn2',
               onPressed: () {
                 // setState(() {
                 stop();
@@ -311,18 +314,18 @@ class _NounState extends State<Noun> {
     await _audioPlayer.stop();
     setState(() {
       _isPlaying = false;
-      _isPaused = true;
+      //_isPaused = true;
     });
   }
 
   Future play() async {
-    print('play called and ............................');
-    print(_state?.processingState);
+    //print('play called and ............................');
+    //print(_state?.processingState);
     await _audioPlayer.play();
     // if (result == 1) {
     setState(() {
       _isPlaying = true;
-      _isPaused = false;
+      //_isPaused = false;
     });
     //}
   }
@@ -368,11 +371,11 @@ class _NounState extends State<Noun> {
                   // ignore: prefer_const_constructors
                   //Checkbox(value: value, onChanged: onChanged),
                   Checkbox(
-                      value: _checkbox,
+                      value: name.isSelected,
                       onChanged: (value) {
                         setState(() {
-                          _checkbox = !_checkbox;
-                          if (_checkbox) {
+                          name.isSelected = !name.isSelected;
+                          if (name.isSelected) {
                             assignToStudent.add(names[_index]);
                           } else {
                             assignToStudent.remove(names[_index]);
@@ -381,7 +384,9 @@ class _NounState extends State<Noun> {
                       }),
                   IconButton(
                       onPressed: () {
-                        nameList.removeItem(name.text);
+                        setState(() {
+                          nameList.removeItem(name.text);
+                        });
                       },
                       icon: const Icon(Icons.delete_forever_rounded))
                 ],
@@ -460,7 +465,7 @@ class _NounState extends State<Noun> {
     try {
       _controller.animateToPage(index);
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -473,6 +478,8 @@ class _NounState extends State<Noun> {
       if (selectedDirectory == null) {
         // User canceled the picker
       } else {
+        selectedDirectory.replaceAll('\\', '/');
+        //print('selected directory ' + selectedDirectory);
         File(selectedDirectory + '/noun.txt').createSync(recursive: true);
         _write(File(selectedDirectory + '/noun.txt'));
         copyImage(selectedDirectory);
@@ -484,7 +491,7 @@ class _NounState extends State<Noun> {
   Future<void> copyAudio(String destination) async {
     for (Name name in assignToStudent) {
       File file = File(name.audio);
-      await file.copy(destination + '/${file.path.split('\\').last}');
+      await file.copy(destination + '/${file.path.split('/').last}');
     }
   }
 
@@ -506,14 +513,17 @@ class _NounState extends State<Noun> {
 
   Future _write(File file) async {
     for (Name name in assignToStudent) {
-      file.writeAsString(name.text +
-          '; ' +
-          name.meaning +
-          '; ' +
-          name.dir +
-          '; ' +
-          name.audio +
-          '\n');
+      //print(name.text + ' ' + name.meaning);
+      await file.writeAsString(
+          name.text +
+              '; ' +
+              name.meaning +
+              '; ' +
+              name.dir +
+              '; ' +
+              name.audio +
+              '\n',
+          mode: FileMode.append);
     }
     // String line = text + '; ' + meaning + '; ' + dir + '; ' + audio;
     // //addNoun(text, meaning, dir);
