@@ -1,3 +1,4 @@
+//https://pastebin.com/ZSgj4LU3
 import 'dart:io';
 import 'dart:math';
 
@@ -208,7 +209,11 @@ class _NounState extends State<Noun> {
 
                         _isPlaying = false;
 
-                        _index = (_index - 1) % len;
+                        try {
+                          _index = (_index - 1) % len;
+                        } catch (e) {
+                          print(e);
+                        }
                         //print(_state?.processingState);
                       });
                     },
@@ -247,7 +252,11 @@ class _NounState extends State<Noun> {
                       setState(() {
                         //loading();
 
-                        _index = (_index + 1) % len;
+                        try {
+                          _index = (_index + 1) % len;
+                        } catch (e) {
+                          print(e);
+                        }
                       });
                     },
                     child: Row(
