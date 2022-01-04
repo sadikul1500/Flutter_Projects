@@ -355,51 +355,54 @@ class _NounState extends State<Noun> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Column(
+        child: Row(
           children: <Widget>[
-            Text(
-              'Noun: ${name.text}',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            Text(
-              'Meaning: ${name.meaning}',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  // ignore: prefer_const_constructors
-                  //Checkbox(value: value, onChanged: onChanged),
-                  Checkbox(
-                      value: name.isSelected,
-                      onChanged: (value) {
-                        setState(() {
-                          name.isSelected = !name.isSelected;
-                          if (name.isSelected) {
-                            assignToStudent.add(names[_index]);
-                          } else {
-                            assignToStudent.remove(names[_index]);
-                          }
-                        });
-                      }),
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          nameList.removeItem(name.text);
-                        });
-                      },
-                      icon: const Icon(Icons.delete_forever_rounded))
-                ],
-              ),
+            Column(
+              children: <Widget>[
+                Text(
+                  'Noun: ${name.text}',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                Text(
+                  'Meaning: ${name.meaning}',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    // ignore: prefer_const_constructors
+                    //Checkbox(value: value, onChanged: onChanged),
+                    Checkbox(
+                        value: name.isSelected,
+                        onChanged: (value) {
+                          setState(() {
+                            name.isSelected = !name.isSelected;
+                            if (name.isSelected) {
+                              assignToStudent.add(names[_index]);
+                            } else {
+                              assignToStudent.remove(names[_index]);
+                            }
+                          });
+                        }),
+                    //const SizedBox(width: 20.0),
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            nameList.removeItem(name.text);
+                          });
+                        },
+                        icon: const Icon(Icons.delete_forever_rounded))
+                  ],
+                ),
+              ],
             ),
             SizedBox(
               height: 400,
