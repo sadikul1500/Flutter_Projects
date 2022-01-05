@@ -359,52 +359,93 @@ class _NounState extends State<Noun> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text(
-                  'Noun: ${name.text}',
-                  style: const TextStyle(
+                const Text(
+                  'Noun: ',
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 10.0),
-                Text(
-                  'Meaning: ${name.meaning}',
-                  style: const TextStyle(
+                const Text(
+                  'Meaning:',
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    // ignore: prefer_const_constructors
-                    //Checkbox(value: value, onChanged: onChanged),
-                    Checkbox(
-                        value: name.isSelected,
-                        onChanged: (value) {
-                          setState(() {
-                            name.isSelected = !name.isSelected;
-                            if (name.isSelected) {
-                              assignToStudent.add(names[_index]);
-                            } else {
-                              assignToStudent.remove(names[_index]);
-                            }
-                          });
-                        }),
-                    const SizedBox(width: 20.0),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            nameList.removeItem(name.text);
-                          });
-                        },
-                        icon: const Icon(Icons.delete_forever_rounded))
-                  ],
-                ),
+                const SizedBox(height: 20.0),
+                Checkbox(
+                    value: name.isSelected,
+                    onChanged: (value) {
+                      setState(() {
+                        name.isSelected = !name.isSelected;
+                        if (name.isSelected) {
+                          assignToStudent.add(names[_index]);
+                        } else {
+                          assignToStudent.remove(names[_index]);
+                        }
+                      });
+                    }),
               ],
             ),
+            //const SizedBox(height: 10.0),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(
+                  name.text,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  name.meaning,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        nameList.removeItem(name.text);
+                      });
+                    },
+                    icon: const Icon(Icons.delete_forever_rounded))
+              ],
+            ),
+            //const SizedBox(height: 10.0),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: <Widget>[
+            //     // ignore: prefer_const_constructors
+            //     //Checkbox(value: value, onChanged: onChanged),
+            //     // Checkbox(
+            //     //     value: name.isSelected,
+            //     //     onChanged: (value) {
+            //     //       setState(() {
+            //     //         name.isSelected = !name.isSelected;
+            //     //         if (name.isSelected) {
+            //     //           assignToStudent.add(names[_index]);
+            //     //         } else {
+            //     //           assignToStudent.remove(names[_index]);
+            //     //         }
+            //     //       });
+            //     //     }),
+            //     // const SizedBox(width: 20.0),
+            //   //   IconButton(
+            //   //       onPressed: () {
+            //   //         setState(() {
+            //   //           nameList.removeItem(name.text);
+            //   //         });
+            //   //       },
+            //   //       icon: const Icon(Icons.delete_forever_rounded))
+            //   // ],
+            // ),
             Column(
               children: <Widget>[
                 SizedBox(
@@ -483,6 +524,7 @@ class _NounState extends State<Noun> {
       _controller.animateToPage(index);
     } catch (e) {
       //print(e);
+      throw Exception(e);
     }
   }
 
