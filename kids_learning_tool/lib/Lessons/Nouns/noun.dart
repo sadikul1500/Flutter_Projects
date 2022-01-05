@@ -356,6 +356,7 @@ class _NounState extends State<Noun> {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Column(
               children: <Widget>[
@@ -392,7 +393,7 @@ class _NounState extends State<Noun> {
                             }
                           });
                         }),
-                    //const SizedBox(width: 20.0),
+                    const SizedBox(width: 20.0),
                     IconButton(
                         onPressed: () {
                           setState(() {
@@ -404,42 +405,46 @@ class _NounState extends State<Noun> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 400,
-              width: 600,
-              child: CarouselSlider.builder(
-                carouselController: _controller,
-                itemCount: images.length,
-                options: CarouselOptions(
-                    height: 385.0,
-                    initialPage: 0,
-                    enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.height,
-                    autoPlay: true,
-                    //pageSnapping: false,
-                    aspectRatio: 16 / 9,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enableInfiniteScroll: true,
-                    autoPlayInterval: const Duration(seconds: 2),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 1400),
-                    viewportFraction: 0.8,
-                    pauseAutoPlayOnManualNavigate: true,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        //images = widget.name.getImgList();
-                        activateIndex = index;
-                      });
-                    }),
-                itemBuilder: (context, index, realIndex) {
-                  final img = images[index];
+            Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 400,
+                  width: 600,
+                  child: CarouselSlider.builder(
+                    carouselController: _controller,
+                    itemCount: images.length,
+                    options: CarouselOptions(
+                        height: 385.0,
+                        initialPage: 0,
+                        enlargeCenterPage: true,
+                        enlargeStrategy: CenterPageEnlargeStrategy.height,
+                        autoPlay: true,
+                        //pageSnapping: false,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: true,
+                        autoPlayInterval: const Duration(seconds: 2),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 1400),
+                        viewportFraction: 0.8,
+                        pauseAutoPlayOnManualNavigate: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            //images = widget.name.getImgList();
+                            activateIndex = index;
+                          });
+                        }),
+                    itemBuilder: (context, index, realIndex) {
+                      final img = images[index];
 
-                  return buildImage(img, index);
-                },
-              ),
+                      return buildImage(img, index);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                buildIndicator(images),
+              ],
             ),
-            const SizedBox(height: 10),
-            buildIndicator(images),
           ],
         ),
       ),
