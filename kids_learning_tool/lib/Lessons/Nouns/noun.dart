@@ -359,6 +359,47 @@ class _NounState extends State<Noun> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 400,
+                  width: 600,
+                  child: CarouselSlider.builder(
+                    carouselController: _controller,
+                    itemCount: images.length,
+                    options: CarouselOptions(
+                        height: 385.0,
+                        initialPage: 0,
+                        enlargeCenterPage: true,
+                        enlargeStrategy: CenterPageEnlargeStrategy.height,
+                        autoPlay: true,
+                        //pageSnapping: false,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: true,
+                        autoPlayInterval: const Duration(seconds: 2),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 1400),
+                        viewportFraction: 0.8,
+                        pauseAutoPlayOnManualNavigate: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            //images = widget.name.getImgList();
+                            activateIndex = index;
+                          });
+                        }),
+                    itemBuilder: (context, index, realIndex) {
+                      final img = images[index];
+
+                      return buildImage(img, index);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                buildIndicator(images),
+              ],
+            ),
+
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 const Text(
@@ -416,74 +457,6 @@ class _NounState extends State<Noun> {
                       });
                     },
                     icon: const Icon(Icons.delete_forever_rounded))
-              ],
-            ),
-            //const SizedBox(height: 10.0),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: <Widget>[
-            //     // ignore: prefer_const_constructors
-            //     //Checkbox(value: value, onChanged: onChanged),
-            //     // Checkbox(
-            //     //     value: name.isSelected,
-            //     //     onChanged: (value) {
-            //     //       setState(() {
-            //     //         name.isSelected = !name.isSelected;
-            //     //         if (name.isSelected) {
-            //     //           assignToStudent.add(names[_index]);
-            //     //         } else {
-            //     //           assignToStudent.remove(names[_index]);
-            //     //         }
-            //     //       });
-            //     //     }),
-            //     // const SizedBox(width: 20.0),
-            //   //   IconButton(
-            //   //       onPressed: () {
-            //   //         setState(() {
-            //   //           nameList.removeItem(name.text);
-            //   //         });
-            //   //       },
-            //   //       icon: const Icon(Icons.delete_forever_rounded))
-            //   // ],
-            // ),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 400,
-                  width: 600,
-                  child: CarouselSlider.builder(
-                    carouselController: _controller,
-                    itemCount: images.length,
-                    options: CarouselOptions(
-                        height: 385.0,
-                        initialPage: 0,
-                        enlargeCenterPage: true,
-                        enlargeStrategy: CenterPageEnlargeStrategy.height,
-                        autoPlay: true,
-                        //pageSnapping: false,
-                        aspectRatio: 16 / 9,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enableInfiniteScroll: true,
-                        autoPlayInterval: const Duration(seconds: 2),
-                        autoPlayAnimationDuration:
-                            const Duration(milliseconds: 1400),
-                        viewportFraction: 0.8,
-                        pauseAutoPlayOnManualNavigate: true,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            //images = widget.name.getImgList();
-                            activateIndex = index;
-                          });
-                        }),
-                    itemBuilder: (context, index, realIndex) {
-                      final img = images[index];
-
-                      return buildImage(img, index);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 10),
-                buildIndicator(images),
               ],
             ),
           ],
@@ -607,3 +580,32 @@ class _NounState extends State<Noun> {
   //   }
   // }
 }
+
+//const SizedBox(height: 10.0),
+// Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//   children: <Widget>[
+//     // ignore: prefer_const_constructors
+//     //Checkbox(value: value, onChanged: onChanged),
+//     // Checkbox(
+//     //     value: name.isSelected,
+//     //     onChanged: (value) {
+//     //       setState(() {
+//     //         name.isSelected = !name.isSelected;
+//     //         if (name.isSelected) {
+//     //           assignToStudent.add(names[_index]);
+//     //         } else {
+//     //           assignToStudent.remove(names[_index]);
+//     //         }
+//     //       });
+//     //     }),
+//     // const SizedBox(width: 20.0),
+//   //   IconButton(
+//   //       onPressed: () {
+//   //         setState(() {
+//   //           nameList.removeItem(name.text);
+//   //         });
+//   //       },
+//   //       icon: const Icon(Icons.delete_forever_rounded))
+//   // ],
+// ),
