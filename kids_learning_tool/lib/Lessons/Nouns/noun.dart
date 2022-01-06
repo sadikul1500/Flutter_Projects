@@ -274,9 +274,10 @@ class _NounState extends State<Noun> {
             ],
           ),
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+        floatingActionButton: Row(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            const SizedBox(width: 25.0),
             FloatingActionButton.extended(
               heroTag: 'btn1',
               onPressed: () {
@@ -289,9 +290,10 @@ class _NounState extends State<Noun> {
                     fontSize: 18,
                   )),
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            // const SizedBox(
+            //   height: 15,
+            // ),
+            Spacer(),
             FloatingActionButton.extended(
               heroTag: 'btn2',
               onPressed: () {
@@ -439,14 +441,14 @@ class _NounState extends State<Noun> {
                   name.text,
                   style: const TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
                   name.meaning,
                   style: const TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 20.0),
