@@ -160,7 +160,10 @@ class _NounState extends State<Noun> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Noun'),
+          title: const Text(
+            'Noun',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+          ),
           centerTitle: true,
           actions: [
             IconButton(
@@ -220,11 +223,16 @@ class _NounState extends State<Noun> {
                     label: const Text(
                       'Prev',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
                       ),
                     ),
                     icon: const Icon(
                       Icons.navigate_before,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      alignment: Alignment.center,
+                      minimumSize: const Size(100, 42),
                     ),
                   ),
                   const SizedBox(width: 30),
@@ -260,13 +268,22 @@ class _NounState extends State<Noun> {
                       });
                     },
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: const <Widget>[
                         Text('Next',
                             style: TextStyle(
-                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
                             )),
-                        Icon(Icons.navigate_next),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(Icons.navigate_next_rounded),
                       ],
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      alignment: Alignment.center,
+                      minimumSize: const Size(100, 42),
                     ),
                   ),
                 ],
@@ -293,7 +310,7 @@ class _NounState extends State<Noun> {
             // const SizedBox(
             //   height: 15,
             // ),
-            Spacer(),
+            const Spacer(),
             FloatingActionButton.extended(
               heroTag: 'btn2',
               onPressed: () {
@@ -363,7 +380,7 @@ class _NounState extends State<Noun> {
             Column(
               children: <Widget>[
                 SizedBox(
-                  height: 400,
+                  height: 420,
                   width: 600,
                   child: CarouselSlider.builder(
                     carouselController: _controller,
@@ -444,6 +461,7 @@ class _NounState extends State<Noun> {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
+                const SizedBox(height: 10),
                 Text(
                   name.meaning,
                   style: const TextStyle(
