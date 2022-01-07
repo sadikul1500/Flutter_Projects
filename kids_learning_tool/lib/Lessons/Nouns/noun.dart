@@ -419,23 +419,33 @@ class _NounState extends State<Noun> {
             ),
 
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                const Text(
-                  'Noun: ',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        const Text(
+                          'Noun: ',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const Text(
+                          'Meaning:',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const Text(
-                  'Meaning:',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 55.0),
+                const SizedBox(height: 22.0),
                 Checkbox(
                     value: name.isSelected,
                     onChanged: (value) {
@@ -450,6 +460,7 @@ class _NounState extends State<Noun> {
                     }),
               ],
             ),
+
             //const SizedBox(height: 10.0),
             Column(
               children: <Widget>[
@@ -615,7 +626,6 @@ class _NounState extends State<Noun> {
                     _dismissDialog();
                   },
                   child: const Text('Close')),
-              
             ],
           );
         });
