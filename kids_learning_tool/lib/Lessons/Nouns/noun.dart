@@ -537,6 +537,7 @@ class _NounState extends State<Noun> {
   Future teachStudent() async {
     if (assignToStudent.isEmpty) {
       //alert popup
+      _showMaterialDialog();
     } else {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
@@ -590,9 +591,34 @@ class _NounState extends State<Noun> {
               '\n',
           mode: FileMode.append);
     }
+
     // String line = text + '; ' + meaning + '; ' + dir + '; ' + audio;
     // //addNoun(text, meaning, dir);
     // return file.writeAsString('\n$line', mode: FileMode.append);
+  }
+
+  _dismissDialog() {
+    Navigator.pop(context);
+  }
+
+  void _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('No item was selected'),
+            content:
+                const Text('Please select at least one item before assigning'),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    _dismissDialog();
+                  },
+                  child: const Text('Close')),
+              
+            ],
+          );
+        });
   }
 
   // Future pause() async {
