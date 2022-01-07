@@ -435,7 +435,7 @@ class _NounState extends State<Noun> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 55.0),
                 Checkbox(
                     value: name.isSelected,
                     onChanged: (value) {
@@ -452,21 +452,34 @@ class _NounState extends State<Noun> {
             ),
             //const SizedBox(height: 10.0),
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text(
-                  name.text,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  name.meaning,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
+                Card(
+                  //margin: const EdgeInsets.all(122.0),
+                  color: Colors.blue[400],
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          name.text,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          name.meaning,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20.0),
