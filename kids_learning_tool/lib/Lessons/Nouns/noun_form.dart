@@ -136,7 +136,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       ),
                     )),
                 Text(_selectedFiles),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 OutlinedButton(
                     onPressed: () {
                       _selectAudio();
@@ -161,9 +161,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         if (_formKey.currentState!.validate()) {
                           // Process data.
                           saveImage();
-                          saveAudio();
+                          //saveAudio();
                           createNoun(
-                              path, '$path/${audio.path.split('\\').last}');
+                              path,
+                              audio
+                                  .path); //'$path/${audio.path.split('\\').last}'
                           showDialog(
                             context: context,
                             builder: (BuildContext context) =>
@@ -173,7 +175,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         }
                       },
                       child: const Text(
-                        'Submit',
+                        'Save',
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -236,6 +238,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Future saveImage() async {
     path =
         'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+    String audioPath =
+        'D:/Sadi/FlutterProjects/kids_learning_tool/assets/Audios';
     final newDir = await Directory(path).create(recursive: true);
 
     for (File file in files) {
@@ -247,6 +251,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       //print('$newDir/${file.path.split('\\').last}');
       await file.copy('${newDir.path}/${file.path.split('\\').last}');
     }
+    await audio.copy('$audioPath/${audio.path.split('\\').last}');
 
     //createNoun(imagePath);
   }
@@ -264,13 +269,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   Widget _buildPopupDialog(BuildContext context) {
-    return new AlertDialog(
+    return AlertDialog(
       title: const Text('Info'),
-      content: new Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Text("Saved Successfully"),
+        children: const <Widget>[
+          Text("Saved Successfully"),
         ],
       ),
       actions: <Widget>[
@@ -280,6 +285,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               noun.clear();
               meaning.clear();
               _selectedFiles = '';
+              _audioFile = '';
             });
             Navigator.of(context).pop();
           },
