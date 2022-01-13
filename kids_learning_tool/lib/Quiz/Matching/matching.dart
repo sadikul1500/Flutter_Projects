@@ -46,6 +46,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   String _selectedFiles = '';
   String _audioFile = '';
   String dropdownValue = 'Noun';
+  String question = 'What do you see in the picture?';
   TextEditingController noun = TextEditingController();
   TextEditingController meaning = TextEditingController();
 
@@ -69,7 +70,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return Future.value(false);
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(250, 200, 250, 0),
+        padding: const EdgeInsets.fromLTRB(250, 100, 250, 0),
         color: Colors.white.withOpacity(0.80),
         child: Align(
           alignment: const Alignment(0, 0),
@@ -79,31 +80,49 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               //mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                DropdownButton(
-                  hint: const Text("Select Category"),
-                  //isExpanded: true,
+                Row(children: <Widget>[
+                  const Text("Select Category",
+                      style: TextStyle(color: Colors.blue, fontSize: 18)),
+                  const SizedBox(width: 15),
+                  DropdownButton(
+                    hint: const Text("Select Category"),
+                    //isExpanded: true,
 
-                  items: ['Noun', 'Verb', 'Task Scheduling', 'Colour']
-                      .map((option) {
-                    return DropdownMenuItem(
-                      child: Text(option),
-                      value: option,
-                    );
-                  }).toList(),
-                  value: dropdownValue, //asign the selected value
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue =
-                          value!; //on selection, selectedDropDownValue i sUpdated
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
+                    items: ['Noun', 'Verb', 'Task Scheduling', 'Colour']
+                        .map((option) {
+                      return DropdownMenuItem(
+                        child: Text(option),
+                        value: option,
+                      );
+                    }).toList(),
+                    value: dropdownValue, //asign the selected value
+                    onChanged: (String? value) {
+                      setState(() {
+                        dropdownValue =
+                            value!; //on selection, selectedDropDownValue i sUpdated
+                      });
+                    },
+                  ),
+                ]),
+                const SizedBox(height: 15),
+                OutlinedButton(
+                    onPressed: () {
+                      _openFileExplorer();
+                    },
+                    child: const Text(
+                      'Select an Image',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
+                Text(_selectedFiles),
+                const SizedBox(height: 15),
                 TextFormField(
                   controller: noun,
                   decoration: const InputDecoration(
-                    hintText: 'Enter a Noun',
-                    labelText: 'Noun',
+                    hintText: 'What do you see in the picture?',
+                    labelText: 'Question',
                     labelStyle: TextStyle(
                         color: Colors.black87,
                         fontSize: 17,
@@ -114,14 +133,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: 1.0)),
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
+                  // validator: (String? value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Please enter some text';
+                  //   }
+                  //   return null;
+                  // },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 TextFormField(
                   controller: meaning,
                   decoration: const InputDecoration(
@@ -144,7 +163,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: meaning,
+                  decoration: const InputDecoration(
+                    hintText: 'Option A',
+                    labelText: 'Meaning',
+                    labelStyle: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 17,
+                        fontFamily: 'AvenirLight'),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
                 OutlinedButton(
                     onPressed: () {
                       _openFileExplorer();
@@ -230,7 +271,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   void _openFileExplorer() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
+      allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
     );
@@ -311,27 +352,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
-
-// DropdownButton(
-//                   hint: const Text('Select a Category'),
-//                   icon: const Icon(Icons.arrow_drop_down),
-//                   elevation: 10,
-//                   style: const TextStyle(color: Colors.blue),
-//                   underline: Container(
-//                     height: 2,
-//                     color: Colors.blue,
-//                   ),
-//                   onChanged: (String? newValue) {
-//                     setState(() {
-//                       dropdownValue = newValue!;
-//                     });
-//                   },
-//                   items: <String>['Noun', 'Verb', 'Task Scheduling', 'Colour']
-//                       .map<DropdownMenuItem<String>>((String value) {
-//                     return DropdownMenuItem<String>(
-//                       value: value,
-//                       child: Text(value),
-//                     );
-//                   }).toList(),
-//                   value: dropdownValue,
-//                 ),
