@@ -18,7 +18,7 @@ import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 class NounForm extends StatelessWidget {
   //const NounForm({Key? key}) : super(key: key);
 
-  static const String _title = 'Add a Noun';
+  static const String _title = 'Add a Noun ';
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedFiles = '';
   String _audioFile = '';
+  String audioPath = 'D:/Sadi/FlutterProjects/kids_learning_tool/assets/Audios';
   TextEditingController noun = TextEditingController();
   TextEditingController meaning = TextEditingController();
 
@@ -68,7 +69,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return Future.value(false);
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(250, 200, 250, 0),
+        padding: const EdgeInsets.fromLTRB(250, 150, 250, 0),
         color: Colors.white.withOpacity(0.80),
         child: Align(
           alignment: const Alignment(0, 0),
@@ -164,8 +165,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           //saveAudio();
                           createNoun(
                               path,
-                              audio
-                                  .path); //'$path/${audio.path.split('\\').last}'
+                              audioPath +
+                                  '/' +
+                                  audio.path
+                                      .split('\\')
+                                      .last); //'$path/${audio.path.split('\\').last}'
                           showDialog(
                             context: context,
                             builder: (BuildContext context) =>
@@ -238,8 +242,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Future saveImage() async {
     path =
         'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-    String audioPath =
-        'D:/Sadi/FlutterProjects/kids_learning_tool/assets/Audios';
+
     final newDir = await Directory(path).create(recursive: true);
 
     for (File file in files) {
@@ -252,16 +255,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       await file.copy('${newDir.path}/${file.path.split('\\').last}');
     }
     await audio.copy('$audioPath/${audio.path.split('\\').last}');
+    //audio = File(audioPath + '/' + audio.path.split('\\').last);
 
     //createNoun(imagePath);
   }
 
-  Future saveAudio() async {
-    // final audioPath =
-    //     'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-    //final newDir = await Directory(imagePath).create(recursive: true);
-    await audio.copy('$path/${audio.path.split('\\').last}');
-  }
+  // Future saveAudio() async {
+  //   // final audioPath =
+  //   //     'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+  //   //final newDir = await Directory(imagePath).create(recursive: true);
+  //   await audio.copy('$path/${audio.path.split('\\').last}');
+  // }
 
   void createNoun(String dir, String audio) {
     NameList nameList = NameList();
