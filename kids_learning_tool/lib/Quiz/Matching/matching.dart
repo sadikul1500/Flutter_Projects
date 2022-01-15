@@ -1,214 +1,524 @@
+/// Flutter code sample for Form
+
+// This example shows a [Form] with one [TextFormField] to enter an email
+// address and an [ElevatedButton] to submit the form. A [GlobalKey] is used here
+// to identify the [Form] and validate input.
+//
+// ![](https://flutter.github.io/assets-for-api-docs/assets/widgets/form.png)
+
 import 'dart:io';
-//import 'package:flutter_audio_desktop/flutter_audio_desktop.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_libwinmedia/just_audio_libwinmedia.dart';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/names.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:kids_learning_tool/Quiz/Matching/preview.dart';
+import 'package:kids_learning_tool/Quiz/Matching/question.dart';
 
-class NounCard extends StatefulWidget {
-  final Name name;
-  //final int ind;
-  final AudioPlayer audioPlayer;
-  NounCard(this.name, this.audioPlayer);
+//void main() => runApp(const MyApp());
 
-  @override
-  State<NounCard> createState() => _NounCardState();
-}
+/// This is the main application widget.
+class Matching extends StatelessWidget {
+  //const NounForm({Key? key}) : super(key: key);
 
-class _NounCardState extends State<NounCard> {
-  AudioPlayer audioPlayer = AudioPlayer(); // = widget.audioPlayer;
-  NameList nameList = NameList();
-  int index = 0;
-  int activateIndex = 0;
-  late List<String> images;
-  PlayerState? _state;
-  final CarouselController _controller = CarouselController();
-
-  @override
-  void initState() {
-    //activateIndex = widget.ind;
-    // print('hehehehehehe');
-    // print(activateIndex);
-    audioPlayer.playerStateStream.listen((state) {
-      setState(() {
-        _state = state;
-      });
-      // print(100);
-      // print(_state?.processingState);
-    });
-
-    super.initState();
-  }
+  static const String _title = 'Prepare a question';
 
   @override
   Widget build(BuildContext context) {
-    images = widget.name.getImgList();
-    audioPlayer = widget.audioPlayer;
-    //playAudioFile();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(_title),
+        centerTitle: true,
+      ),
+      body: const MyStatefulWidget(),
+    );
+  }
+}
 
-    return Container(
-      height: 1500,
-      child: Card(
-        borderOnForeground: false,
-        child: Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Noun: ${widget.name.text}',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
+/// This is the stateful widget that the main application instantiates.
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({Key? key}) : super(key: key);
+
+  @override
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
+
+/// This is the private State class that goes with MyStatefulWidget.
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _selectedFiles = '';
+  String _audioFile = '';
+  String dropdownCategory = 'Noun';
+  String dropdownAnswer = 'A';
+  String question = 'What do you see in the picture?';
+  late Question ques;
+  TextEditingController noun = TextEditingController();
+  TextEditingController meaning = TextEditingController();
+  TextEditingController optionA = TextEditingController();
+  TextEditingController optionB = TextEditingController();
+  TextEditingController optionC = TextEditingController();
+  TextEditingController optionD = TextEditingController();
+
+  List<File> files = [];
+  late File audio;
+  String path = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        print(
+            'Backbutton pressed (device or appbar button), do whatever you want.');
+
+        //trigger leaving and use own data
+        Navigator.pop(context);
+        //Navigator.pop(context);
+        //Navigator.pushNamed(context, '/noun');
+
+        //we need to return a future
+        return Future.value(false);
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(250, 40, 250, 20),
+        color: Colors.white.withOpacity(0.80),
+        child: Align(
+          alignment: const Alignment(0, 0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(children: <Widget>[
+                  const Text("Select Category",
+                      style: TextStyle(color: Colors.blue, fontSize: 18)),
+                  const SizedBox(width: 15),
+                  DropdownButton(
+                    hint: const Text("Select Category"),
+                    //isExpanded: true,
+
+                    items: ['Noun', 'Verb', 'Task Scheduling', 'Colour']
+                        .map((option) {
+                      return DropdownMenuItem(
+                        child: Text(option),
+                        value: option,
+                      );
+                    }).toList(),
+                    value: dropdownCategory, //asign the selected value
+                    onChanged: (String? value) {
+                      setState(() {
+                        dropdownCategory =
+                            value!; //on selection, selectedDropDownValue i sUpdated
+                      });
+                    },
+                  ),
+                ]),
+                const SizedBox(height: 10),
+                OutlinedButton(
+                    onPressed: () {
+                      _openFileExplorer();
+                    },
+                    child: const Text(
+                      'Select an Image',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
+                Text(_selectedFiles),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: noun,
+                  decoration: const InputDecoration(
+                    hintText: 'What do you see in the picture?',
+                    labelText: 'Question',
+                    labelStyle: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontFamily: 'AvenirLight'),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                  ),
+                  // validator: (String? value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Please enter some text';
+                  //   }
+                  //   return null;
+                  // },
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              Text(
-                'Meaning: ${widget.name.meaning}',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-                child: Row(
+                const SizedBox(height: 10),
+                Row(
                   children: <Widget>[
-                    // ignore: prefer_const_constructors
-                    // Checkbox(value: value, onChanged: onChanged),
-                    IconButton(
-                        onPressed: () {
-                          nameList.removeItem(widget.name.text);
+                    Flexible(
+                      child: TextFormField(
+                        controller: optionA,
+                        decoration: const InputDecoration(
+                          hintText: 'Option A',
+                          labelText: 'Option A',
+                          labelStyle: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 17,
+                              fontFamily: 'AvenirLight'),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueAccent),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0)),
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
                         },
-                        icon: const Icon(Icons.delete))
+                      ),
+                    ),
+
+                    const SizedBox(width: 40), //SizedBox(height: 10),
+                    Flexible(
+                      child: TextFormField(
+                        controller: optionB,
+                        decoration: const InputDecoration(
+                          hintText: 'Option B',
+                          labelText: 'Option B',
+                          labelStyle: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 17,
+                              fontFamily: 'AvenirLight'),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueAccent),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0)),
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              SizedBox(
-                //height: 100,
-                //width: 600,
-                child: CarouselSlider.builder(
-                  carouselController: _controller,
-                  itemCount: images.length,
-                  options: CarouselOptions(
-                      height: 385.0,
-                      initialPage: 0,
-                      enlargeCenterPage: true,
-                      enlargeStrategy: CenterPageEnlargeStrategy.height,
-                      autoPlay: true,
-                      //pageSnapping: false,
-                      aspectRatio: 16 / 9,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enableInfiniteScroll: true,
-                      autoPlayInterval: const Duration(seconds: 2),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 1400),
-                      viewportFraction: 0.8,
-                      pauseAutoPlayOnManualNavigate: true,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          //images = widget.name.getImgList();
-                          activateIndex = index;
-                        });
-                      }),
-                  itemBuilder: (context, index, realIndex) {
-                    final img = images[index];
+                const SizedBox(height: 10),
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        controller: optionC,
+                        decoration: const InputDecoration(
+                          hintText: 'Option C',
+                          labelText: 'Option C',
+                          labelStyle: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 17,
+                              fontFamily: 'AvenirLight'),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueAccent),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0)),
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
 
-                    return buildImage(img, index);
-                  },
+                    const SizedBox(width: 40), //SizedBox(height: 10),
+                    Flexible(
+                      child: TextFormField(
+                        controller: optionD,
+                        decoration: const InputDecoration(
+                          hintText: 'Option D',
+                          labelText: 'Option D',
+                          labelStyle: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 17,
+                              fontFamily: 'AvenirLight'),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueAccent),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0)),
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              buildIndicator(),
-            ],
+                const SizedBox(height: 10),
+                Row(children: <Widget>[
+                  const Text("Correct Answer ",
+                      style: TextStyle(color: Colors.blue, fontSize: 18)),
+                  const SizedBox(width: 10),
+                  DropdownButton(
+                    //hint: const Text("Select Category"),
+                    //isExpanded: true,
+
+                    items: ['A', 'B', 'C', 'D'].map((option) {
+                      return DropdownMenuItem(
+                        child: Text(option),
+                        value: option,
+                      );
+                    }).toList(),
+                    value: dropdownAnswer, //asign the selected value
+                    onChanged: (String? value) {
+                      setState(() {
+                        dropdownAnswer =
+                            value!; //on selection, selectedDropDownValue i sUpdated
+                      });
+                    },
+                  ),
+                ]),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    ElevatedButton(
+                      child: const Text(
+                        'Preview',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(100, 50), elevation: 3),
+                      onPressed: () {
+                        // Validate will return true if the form is valid, or false if
+                        // the form is invalid.
+                        if (_formKey.currentState!.validate()) {
+                          createQuestion();
+                          Navigator.of(context).push(
+                            // With MaterialPageRoute, you can pass data between pages,
+                            // but if you have a more complex app, you will quickly get lost.
+                            MaterialPageRoute(
+                              builder: (context) => Preview(ques),
+                            ),
+                          );
+                          // Process data.
+                          // saveImage();
+                          // //saveAudio();
+                          // createNoun(
+                          //     path,
+                          //     audio
+                          //         .path); //'$path/${audio.path.split('\\').last}'
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) =>
+                          //       _buildPopupDialog(context),
+                          // );
+                          //Navigator.pushNamed(context, '/home');
+                        }
+                      },
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(100, 50), elevation: 3),
+                      onPressed: () {
+                        // Validate will return true if the form is valid, or false if
+                        // the form is invalid.
+                        if (_formKey.currentState!.validate()) {
+                          // Process data.
+                          // saveImage();
+                          // //saveAudio();
+                          //createNoun(
+                          //     path,
+                          //     audio
+                          //         .path); //'$path/${audio.path.split('\\').last}'
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) =>
+                          //       _buildPopupDialog(context),
+                          // );
+                          //Navigator.pushNamed(context, '/home');
+                        }
+                      },
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildImage(String img, int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      color: Colors.grey,
-      child: Image.file(
-        File(img),
-        fit: BoxFit.fill,
-        filterQuality: FilterQuality.high,
-      ),
+  void _openFileExplorer() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
     );
-  }
 
-  Widget buildIndicator() => AnimatedSmoothIndicator(
-        activeIndex: activateIndex,
-        count: images.length,
-        effect: const SwapEffect(
-          activeDotColor: Colors.blue,
-          dotColor: Colors.black12,
-          dotHeight: 10,
-          dotWidth: 10,
-        ),
-        onDotClicked: animateToSlide,
-      );
+    if (result != null) {
+      files = result.paths.map((path) => File(path!)).toList();
+      //PlatformFile file = result.files.first;
 
-  void animateToSlide(int index) {
-    // if (index > images.length) {
-    //   index = 0;
-    // }
-    try {
-      _controller.animateToPage(index);
-    } catch (e) {
-      //print(e);
+      setState(() {
+        for (File file in files) {
+          //print(file.path.split('/').last);
+          _selectedFiles += file.path.split('\\').last + ', ';
+        }
+      });
+    } else {
+      // User canceled the picker
     }
   }
 
-  void playAudioFile() {
-    //_audioPlayer.setUrl(url);
-    // _audioPlayer.setFilePath('C:/Users/Admin/Downloads/text.wav',
-    //     preload: false);
-    //print('called');
-    audioPlayer.play();
+  Future saveImage() async {
+    path =
+        'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+    final newDir = await Directory(path).create(recursive: true);
+
+    for (File file in files) {
+      await file.copy('${newDir.path}/${file.path.split('\\').last}');
+    }
+
+    //createNoun(imagePath);
   }
 
-  void removeItem(int index) {}
+  // Future saveAudio() async {
+  //   // final audioPath =
+  //   //     'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+  //   //final newDir = await Directory(imagePath).create(recursive: true);
+  //   await audio.copy('$path/${audio.path.split('\\').last}');
+  // }
+
+  void createNoun(String dir, String audio) {
+    NameList nameList = NameList();
+    nameList.addNoun(noun.text, meaning.text, dir, audio);
+  }
+
+  void createQuestion() {
+    List<String> options = [
+      optionA.text,
+      optionB.text,
+      optionC.text,
+      optionD.text
+    ];
+    ques = Question(
+        dropdownCategory, files[0].path, question, options, dropdownAnswer);
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Info'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const <Widget>[
+          Text("Saved Successfully"),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            setState(() {
+              noun.clear();
+              meaning.clear();
+              _selectedFiles = '';
+            });
+            Navigator.of(context).pop();
+          },
+          //color: Theme.of(context).primaryColor,
+          child: const Text('Ok'),
+        ),
+      ],
+    );
+  }
 }
 
-// @override
-// void didChangeDependencies() {
-//   print('kaj korsi ryan mama');
-//   activateIndex = widget.ind;
-//   //images = widget.name.getImgList();
-//   print('activate index dekho...');
-//   print(activateIndex);
-//   // TODO: implement didChangeDependencies
-//   super.didChangeDependencies();
-// }
-
-//   void playAudioFile() {
-//     // Load audio file.
-//     // audioPlayer
-//     //     .load(AudioSource(file: File('C:/Users/Admin/Downloads/test.wav')));
-//     var audioPlayer = AudioPlayer(id: 0)
-//       ..stream.listen(
-//         (Audio audio) {
-//           // Listen to playback events.
-//         },
-//       );
-//     audioPlayer.load(
-//       AudioSource.fromFile(
-//         File('C:/Users/Admin/Downloads/test.wav'),
+// OutlinedButton(
+//     onPressed: () {
+//       _openFileExplorer();
+//     },
+//     child: const Text(
+//       'Select Images',
+//       style: TextStyle(
+//         fontSize: 18,
+//         fontWeight: FontWeight.w400,
 //       ),
-//     );
+//     )),
+// Text(_selectedFiles),
+// const SizedBox(height: 10),
+// OutlinedButton(
+//     onPressed: () {
+//       _selectAudio();
+//     },
+//     child: const Text(
+//       'Select Audio',
+//       style: TextStyle(
+//         fontSize: 18,
+//         fontWeight: FontWeight.w400,
+//       ),
+//     )),
+// Text(_audioFile),
+// Center(
+//   child: Padding(
+//     padding: const EdgeInsets.symmetric(vertical: 16.0),
+//     child: ElevatedButton(
+//       style: ElevatedButton.styleFrom(
+//           minimumSize: const Size(100, 50), elevation: 3),
+//       onPressed: () {
+//         // Validate will return true if the form is valid, or false if
+//         // the form is invalid.
+//         if (_formKey.currentState!.validate()) {
+//           // Process data.
+//           saveImage();
+//           saveAudio();
+//           createNoun(
+//               path, '$path/${audio.path.split('\\').last}');
+//           showDialog(
+//             context: context,
+//             builder: (BuildContext context) =>
+//                 _buildPopupDialog(context),
+//           );
+//           //Navigator.pushNamed(context, '/home');
+//         }
+//       },
+//       child: const Text(
+//         'Submit',
+//         style: TextStyle(
+//           fontSize: 20,
+//         ),
+//       ),
+//     ),
+//   ),
+// ),
 
-// // Start playing loaded audio file.
-//     audioPlayer.play();
+//print(100);
+//print(newDir);
+//print(newDir.path);
+//print('${newDir.path}/${file.path.split('\\').last}');
+//print(300);
+//print('$newDir/${file.path.split('\\').last}');
 
-// // Get audio duration.
-//     //print('Duration Of Track: ${audioPlayer.getDuration()}');
-
-// // Change playback volume.
-//     audioPlayer.setVolume(0.8);
-//     print('Changed volume to 80%.');
-//   }
+// print(file.bytes);
+// print(file.size);
+// print(file.extension);
+// print(file.path);
