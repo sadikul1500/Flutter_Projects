@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kids_learning_tool/Quiz/Matching/question.dart';
@@ -39,7 +40,8 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   late Timer _timer;
   int _start = 0;
-  bool hasPressed = false;
+  List<bool> hasPressed = [false, false, false, false];
+  //bool hasPressedB, hasPressedC, hasPressedD = false, false, false, false;
   bool isCorrect = false;
 
   void startTimer() {
@@ -60,112 +62,174 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return Future.value(false);
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(250, 50, 250, 0),
+        padding: const EdgeInsets.fromLTRB(120, 30, 120, 0),
         color: Colors.white.withOpacity(0.80),
         child: Align(
             alignment: const Alignment(0, 0),
             child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
-                    onPressed: () {
-                      startTimer();
-                    },
-                    child: const Text('Start')),
-                Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.blueAccent, shape: BoxShape.circle),
-                  child: Text('$_start'),
+                  onPressed: () {
+                    _start = 0;
+                    startTimer();
+                  },
+                  child: Text(
+                    '$_start',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(24)),
                 ),
-                SizedBox(
-                    height: 300,
-                    width: 400,
-                    child: Image.file(
-                      File(widget.question.imagePath),
-                      fit: BoxFit.fill,
-                      filterQuality: FilterQuality.high,
-                    )),
-                const SizedBox(height: 10),
-                Text(widget.question.ques),
-                const SizedBox(height: 10),
+                // Container(
+                //   decoration: const BoxDecoration(
+                //       color: Colors.blueAccent, shape: BoxShape.circle),
+                //   child: Text('$_start'),
+                // ),
+                const SizedBox(height: 20),
                 Row(
                   children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        if (widget.question.correctAnswer == 'A') {
-                          setState(() {
-                            isCorrect = true;
-                          });
-                        }
-                      },
-                      child: Text('A. ' + widget.question.options[0]),
-                      style: ElevatedButton.styleFrom(
-                          primary: hasPressed
-                              ? (isCorrect ? Colors.green : Colors.red)
-                              : Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (widget.question.correctAnswer == 'B') {
-                          setState(() {
-                            isCorrect = true;
-                          });
-                        }
-                      },
-                      child: Text('B. ' + widget.question.options[1]),
-                      style: ElevatedButton.styleFrom(
-                          primary: hasPressed
-                              ? (isCorrect ? Colors.green : Colors.red)
-                              : Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                    ),
+                    SizedBox(
+                        height: 300,
+                        width: 400,
+                        child: Image.file(
+                          File(widget.question.imagePath),
+                          fit: BoxFit.fill,
+                          filterQuality: FilterQuality.high,
+                        )),
+                    const SizedBox(width: 100),
+                    Column(children: <Widget>[
+                      Text('Q. ' + widget.question.ques,
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 200.0,
+                            height: 50.0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _timer.cancel();
+                                hasPressed[0] = true;
+
+                                if (widget.question.correctAnswer == 'A') {
+                                  setState(() {
+                                    isCorrect = true;
+                                  });
+                                }
+                              },
+                              child: Text('A. ' + widget.question.options[0],
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700)),
+                              style: ElevatedButton.styleFrom(
+                                  primary: hasPressed[0]
+                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      : Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  )),
+                            ),
+                          ),
+                          const SizedBox(width: 100),
+                          SizedBox(
+                            width: 200.0,
+                            height: 50.0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _timer.cancel();
+                                hasPressed[1] = true;
+                                if (widget.question.correctAnswer == 'B') {
+                                  setState(() {
+                                    isCorrect = true;
+                                  });
+                                }
+                              },
+                              child: Text('B. ' + widget.question.options[1],
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700)),
+                              style: ElevatedButton.styleFrom(
+                                  primary: hasPressed[1]
+                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      : Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 200.0,
+                            height: 50.0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _timer.cancel();
+                                hasPressed[2] = true;
+                                if (widget.question.correctAnswer == 'C') {
+                                  setState(() {
+                                    isCorrect = true;
+                                  });
+                                }
+                              },
+                              child: Text('C. ' + widget.question.options[2],
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700)),
+                              style: ElevatedButton.styleFrom(
+                                  primary: hasPressed[2]
+                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      : Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  )),
+                            ),
+                          ),
+                          const SizedBox(width: 100),
+                          SizedBox(
+                            width: 200.0,
+                            height: 50.0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (widget.question.correctAnswer == 'D') {
+                                  _timer.cancel();
+                                  hasPressed[3] = true;
+                                  
+                                  setState(() {
+                                    isCorrect = true;
+                                  });
+                                }
+                              },
+                              child: Text('D. ' + widget.question.options[3],
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700)),
+                              style: ElevatedButton.styleFrom(
+                                  primary: hasPressed[3]
+                                      ? (isCorrect
+                                          ? Colors.green[800]
+                                          : Colors.red)
+                                      : Colors.blueAccent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        if (widget.question.correctAnswer == 'C') {
-                          setState(() {
-                            isCorrect = true;
-                          });
-                        }
-                      },
-                      child: Text('C. ' + widget.question.options[2]),
-                      style: ElevatedButton.styleFrom(
-                          primary: hasPressed
-                              ? (isCorrect ? Colors.green : Colors.red)
-                              : Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (widget.question.correctAnswer == 'D') {
-                          setState(() {
-                            isCorrect = true;
-                          });
-                        }
-                      },
-                      child: Text('D. ' + widget.question.options[3]),
-                      style: ElevatedButton.styleFrom(
-                          primary: hasPressed
-                              ? (isCorrect ? Colors.green : Colors.red)
-                              : Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                    ),
-                  ],
-                ),
+                //Text(widget.question.correctAnswer),
               ],
             )),
       ),
