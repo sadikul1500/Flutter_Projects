@@ -42,7 +42,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _start = 0;
   List<bool> hasPressed = [false, false, false, false];
   //bool hasPressedB, hasPressedC, hasPressedD = false, false, false, false;
-  bool isCorrect = false;
+  List<bool> isCorrect = [false, false, false, false];
 
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -118,7 +118,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
                                 if (widget.question.correctAnswer == 'A') {
                                   setState(() {
-                                    isCorrect = true;
+                                    isCorrect[0] = true;
+                                  });
+                                } else {
+                                  int index = widget
+                                          .question.correctAnswer.codeUnits[0] -
+                                      'A'.codeUnits[0];
+                                  setState(() {
+                                    isCorrect[index] = true;
+                                    hasPressed[index] = true;
                                   });
                                 }
                               },
@@ -128,7 +136,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                       fontWeight: FontWeight.w700)),
                               style: ElevatedButton.styleFrom(
                                   primary: hasPressed[0]
-                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      ? (isCorrect[0]
+                                          ? Colors.green[700]
+                                          : Colors.red[700])
                                       : Colors.blueAccent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -145,7 +155,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 hasPressed[1] = true;
                                 if (widget.question.correctAnswer == 'B') {
                                   setState(() {
-                                    isCorrect = true;
+                                    isCorrect[1] = true;
+                                  });
+                                } else {
+                                  int index = widget
+                                          .question.correctAnswer.codeUnits[0] -
+                                      'A'.codeUnits[0];
+                                  setState(() {
+                                    isCorrect[index] = true;
+                                    hasPressed[index] = true;
                                   });
                                 }
                               },
@@ -155,7 +173,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                       fontWeight: FontWeight.w700)),
                               style: ElevatedButton.styleFrom(
                                   primary: hasPressed[1]
-                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      ? (isCorrect[1]
+                                          ? Colors.green[700]
+                                          : Colors.red[700])
                                       : Colors.blueAccent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -177,7 +197,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 hasPressed[2] = true;
                                 if (widget.question.correctAnswer == 'C') {
                                   setState(() {
-                                    isCorrect = true;
+                                    isCorrect[2] = true;
+                                  });
+                                } else {
+                                  int index = widget
+                                          .question.correctAnswer.codeUnits[0] -
+                                      'A'.codeUnits[0];
+                                  setState(() {
+                                    isCorrect[index] = true;
+                                    hasPressed[index] = true;
                                   });
                                 }
                               },
@@ -187,7 +215,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                       fontWeight: FontWeight.w700)),
                               style: ElevatedButton.styleFrom(
                                   primary: hasPressed[2]
-                                      ? (isCorrect ? Colors.green : Colors.red)
+                                      ? (isCorrect[2]
+                                          ? Colors.green[700]
+                                          : Colors.red[700])
                                       : Colors.blueAccent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -200,12 +230,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             height: 50.0,
                             child: ElevatedButton(
                               onPressed: () {
+                                _timer.cancel();
+                                hasPressed[3] = true;
                                 if (widget.question.correctAnswer == 'D') {
-                                  _timer.cancel();
-                                  hasPressed[3] = true;
-                                  
                                   setState(() {
-                                    isCorrect = true;
+                                    isCorrect[3] = true;
+                                  });
+                                } else {
+                                  int index = widget
+                                          .question.correctAnswer.codeUnits[0] -
+                                      'A'.codeUnits[0];
+                                  setState(() {
+                                    //isCorrect[3] = false;
+                                    isCorrect[index] = true;
+                                    hasPressed[index] = true;
                                   });
                                 }
                               },
@@ -215,9 +253,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                       fontWeight: FontWeight.w700)),
                               style: ElevatedButton.styleFrom(
                                   primary: hasPressed[3]
-                                      ? (isCorrect
-                                          ? Colors.green[800]
-                                          : Colors.red)
+                                      ? (isCorrect[3]
+                                          ? Colors.green[700]
+                                          : Colors.red[700])
                                       : Colors.blueAccent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
