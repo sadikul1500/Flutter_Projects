@@ -46,12 +46,12 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedFiles = '';
-  String _audioFile = '';
+  //String _audioFile = '';
   String dropdownCategory = 'Noun';
   String dropdownAnswer = 'A';
   String question = 'What do you see in the picture?';
   late Question ques;
-  TextEditingController noun = TextEditingController();
+  TextEditingController questionController = TextEditingController();
   TextEditingController meaning = TextEditingController();
   TextEditingController optionA = TextEditingController();
   TextEditingController optionB = TextEditingController();
@@ -127,7 +127,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 Text(_selectedFiles),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: noun,
+                  controller: questionController,
                   decoration: const InputDecoration(
                     hintText: 'What do you see in the picture?',
                     labelText: 'Question',
@@ -312,19 +312,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                               builder: (context) => Preview(ques),
                             ),
                           );
-                          // Process data.
-                          // saveImage();
-                          // //saveAudio();
-                          // createNoun(
-                          //     path,
-                          //     audio
-                          //         .path); //'$path/${audio.path.split('\\').last}'
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) =>
-                          //       _buildPopupDialog(context),
-                          // );
-                          //Navigator.pushNamed(context, '/home');
+                          setState(() {
+                            dropdownCategory = 'Noun';
+                            _selectedFiles = '';
+                            questionController.clear();
+                            optionA.clear();
+                            optionB.clear();
+                            optionC.clear();
+                            optionD.clear();
+                            dropdownAnswer = 'A';
+                          });
                         }
                       },
                     ),
@@ -333,8 +330,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       style: ElevatedButton.styleFrom(
                           minimumSize: const Size(100, 50), elevation: 3),
                       onPressed: () {
-                        // Validate will return true if the form is valid, or false if
-                        // the form is invalid.
                         if (_formKey.currentState!.validate()) {
                           // Process data.
                           // saveImage();
@@ -390,17 +385,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }
   }
 
-  Future saveImage() async {
-    path =
-        'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-    final newDir = await Directory(path).create(recursive: true);
+  // Future saveImage() async {
+  //   path =
+  //       'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
+  //   final newDir = await Directory(path).create(recursive: true);
 
-    for (File file in files) {
-      await file.copy('${newDir.path}/${file.path.split('\\').last}');
-    }
+  //   for (File file in files) {
+  //     await file.copy('${newDir.path}/${file.path.split('\\').last}');
+  //   }
 
-    //createNoun(imagePath);
-  }
+  //   //createNoun(imagePath);
+  // }
 
   // Future saveAudio() async {
   //   // final audioPath =
@@ -409,10 +404,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   //   await audio.copy('$path/${audio.path.split('\\').last}');
   // }
 
-  void createNoun(String dir, String audio) {
-    NameList nameList = NameList();
-    nameList.addNoun(noun.text, meaning.text, dir, audio);
-  }
+  // void createNoun(String dir, String audio) {
+  //   NameList nameList = NameList();
+  //   nameList.addNoun(noun.text, meaning.text, dir, audio);
+  // }
 
   void createQuestion() {
     List<String> options = [
@@ -425,32 +420,32 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         dropdownCategory, files[0].path, question, options, dropdownAnswer);
   }
 
-  Widget _buildPopupDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Info'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const <Widget>[
-          Text("Saved Successfully"),
-        ],
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            setState(() {
-              noun.clear();
-              meaning.clear();
-              _selectedFiles = '';
-            });
-            Navigator.of(context).pop();
-          },
-          //color: Theme.of(context).primaryColor,
-          child: const Text('Ok'),
-        ),
-      ],
-    );
-  }
+  // Widget _buildPopupDialog(BuildContext context) {
+  //   return AlertDialog(
+  //     title: const Text('Info'),
+  //     content: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: const <Widget>[
+  //         Text("Saved Successfully"),
+  //       ],
+  //     ),
+  //     actions: <Widget>[
+  //       TextButton(
+  //         onPressed: () {
+  //           setState(() {
+  //             noun.clear();
+  //             meaning.clear();
+  //             _selectedFiles = '';
+  //           });
+  //           Navigator.of(context).pop();
+  //         },
+  //         //color: Theme.of(context).primaryColor,
+  //         child: const Text('Ok'),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
 
 // OutlinedButton(
