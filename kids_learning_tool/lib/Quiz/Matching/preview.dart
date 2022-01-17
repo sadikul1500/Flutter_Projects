@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
+//import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:kids_learning_tool/Quiz/Matching/question.dart';
 
 class Preview extends StatefulWidget {
@@ -119,8 +120,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 if (widget.question.correctAnswer == 'A') {
                                   setState(() {
                                     isCorrect[0] = true;
+                                    popup('Congratulations',
+                                        'Wooha!!!! You have given correct answer');
                                   });
                                 } else {
+                                  popup('Wrong answer',
+                                      'You have selected the wrong option');
                                   int index = widget
                                           .question.correctAnswer.codeUnits[0] -
                                       'A'.codeUnits[0];
@@ -156,8 +161,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 if (widget.question.correctAnswer == 'B') {
                                   setState(() {
                                     isCorrect[1] = true;
+                                    popup('Congratulations',
+                                        'Wooha!!!! You have given correct answer');
                                   });
                                 } else {
+                                  popup('Wrong answer',
+                                      'You have selected the wrong option');
                                   int index = widget
                                           .question.correctAnswer.codeUnits[0] -
                                       'A'.codeUnits[0];
@@ -198,8 +207,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 if (widget.question.correctAnswer == 'C') {
                                   setState(() {
                                     isCorrect[2] = true;
+                                    popup('Congratulations',
+                                        'Wooha!!!! You have given correct answer');
                                   });
                                 } else {
+                                  popup('Wrong answer',
+                                      'You have selected the wrong option');
                                   int index = widget
                                           .question.correctAnswer.codeUnits[0] -
                                       'A'.codeUnits[0];
@@ -235,8 +248,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 if (widget.question.correctAnswer == 'D') {
                                   setState(() {
                                     isCorrect[3] = true;
+                                    popup('Congratulations',
+                                        'Wooha!!!! You have given correct answer');
                                   });
                                 } else {
+                                  popup('Wrong answer',
+                                      'You have selected the wrong option');
                                   int index = widget
                                           .question.correctAnswer.codeUnits[0] -
                                       'A'.codeUnits[0];
@@ -271,6 +288,28 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ],
             )),
       ),
+    );
+  }
+
+  void popup(String title, String content) {
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return ClassicGeneralDialogWidget(
+          titleText: title,
+          contentText: content,
+          onPositiveClick: () {
+            Navigator.of(context).pop();
+          },
+          onNegativeClick: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+      animationType: DialogTransitionType.rotate3D,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(seconds: 1),
     );
   }
 }
