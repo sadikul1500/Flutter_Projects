@@ -361,7 +361,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         .then((Directory directory) {
       File(directory.path + '/' + dirName + '.txt').createSync(recursive: true);
       _write(File(directory.path + '/' + dirName + '.txt'));
-      print(directory.path);
+      //print(directory.path);
       copyImage(directory.path);
     });
   }
@@ -389,6 +389,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               '\n',
           mode: FileMode.append);
     } catch (e) {
+      //print(e);
       throw Exception(e);
     }
   }
