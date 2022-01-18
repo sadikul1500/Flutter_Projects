@@ -97,7 +97,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         width: 400,
                         child: Image.file(
                           File(widget.question.imagePath),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.contain,
                           filterQuality: FilterQuality.high,
                         )),
                     const SizedBox(width: 100),
