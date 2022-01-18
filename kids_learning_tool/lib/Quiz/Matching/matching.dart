@@ -9,8 +9,10 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+//import 'package:kids_learning_tool/Lessons/Nouns/name_list.dart';
 import 'package:kids_learning_tool/Quiz/Matching/preview.dart';
 import 'package:kids_learning_tool/Quiz/Matching/question.dart';
 
@@ -51,6 +53,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   String dropdownAnswer = 'A';
   String question = 'What do you see in the picture?';
   late Question ques;
+  String? newImagePath;
   TextEditingController questionController = TextEditingController();
   TextEditingController meaning = TextEditingController();
   TextEditingController optionA = TextEditingController();
@@ -66,8 +69,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        print(
-            'Backbutton pressed (device or appbar button), do whatever you want.');
+        // print(
+        //     'Backbutton pressed (device or appbar button), do whatever you want.');
 
         //trigger leaving and use own data
         Navigator.pop(context);
@@ -141,12 +144,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: 1.0)),
                   ),
-                  // validator: (String? value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter some text';
-                  //   }
-                  //   return null;
-                  // },
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -313,14 +310,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             ),
                           );
                           setState(() {
-                            dropdownCategory = 'Noun';
+                            //dropdownCategory = 'Noun';
                             _selectedFiles = '';
-                            questionController.clear();
-                            optionA.clear();
-                            optionB.clear();
-                            optionC.clear();
-                            optionD.clear();
-                            dropdownAnswer = 'A';
+                            //questionController.clear();
+                            // optionA.clear();
+                            // optionB.clear();
+                            // optionC.clear();
+                            // optionD.clear();
+                            // dropdownAnswer = 'A';
                           });
                         }
                       },
@@ -331,19 +328,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           minimumSize: const Size(100, 50), elevation: 3),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // Process data.
-                          // saveImage();
-                          // //saveAudio();
-                          //createNoun(
-                          //     path,
-                          //     audio
-                          //         .path); //'$path/${audio.path.split('\\').last}'
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) =>
-                          //       _buildPopupDialog(context),
-                          // );
-                          //Navigator.pushNamed(context, '/home');
+                          String selectedfile = _selectedFiles;
+                          selectDirectory(selectedfile);
+                          setState(() {
+                            _selectedFiles = '';
+                            //newImagePath = '';
+                          });
                         }
                       },
                       child: const Text(
@@ -363,6 +353,51 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
+  void selectDirectory(String selectedFile) async {
+    String dirName = dropdownCategory + '-' + selectedFile.split('.').first;
+    Directory('D:/Sadi/FlutterProjects/kids_learning_tool/assets/Matching/' +
+            dirName)
+        .create()
+        .then((Directory directory) {
+      File(directory.path + '/' + dirName + '.txt').createSync(recursive: true);
+      _write(File(directory.path + '/' + dirName + '.txt'));
+      print(directory.path);
+      copyImage(directory.path);
+    });
+  }
+
+  Future _write(File file) async {
+    // for (Name name in assignToStudent) {
+    //print(name.text + ' ' + name.meaning);
+    try {
+      await file.writeAsString(
+          dropdownCategory +
+              '; ' +
+              newImagePath! +
+              '; ' +
+              questionController.text +
+              '; ' +
+              optionA.text +
+              '; ' +
+              optionB.text +
+              '; ' +
+              optionC.text +
+              '; ' +
+              optionD.text +
+              '; ' +
+              dropdownAnswer +
+              '\n',
+          mode: FileMode.append);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> copyImage(String destination) async {
+    newImagePath = destination + '/' + files[0].path.split('\\').last;
+    await files[0].copy(newImagePath!);
+  }
+
   void _openFileExplorer() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -377,37 +412,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       setState(() {
         for (File file in files) {
           //print(file.path.split('/').last);
-          _selectedFiles += file.path.split('\\').last + ', ';
+          _selectedFiles += file.path.split('\\').last;
         }
       });
     } else {
       // User canceled the picker
     }
   }
-
-  // Future saveImage() async {
-  //   path =
-  //       'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-  //   final newDir = await Directory(path).create(recursive: true);
-
-  //   for (File file in files) {
-  //     await file.copy('${newDir.path}/${file.path.split('\\').last}');
-  //   }
-
-  //   //createNoun(imagePath);
-  // }
-
-  // Future saveAudio() async {
-  //   // final audioPath =
-  //   //     'D:/Sadi/FlutterProjects/kids_learning_tool/assets/nouns/${noun.text}';
-  //   //final newDir = await Directory(imagePath).create(recursive: true);
-  //   await audio.copy('$path/${audio.path.split('\\').last}');
-  // }
-
-  // void createNoun(String dir, String audio) {
-  //   NameList nameList = NameList();
-  //   nameList.addNoun(noun.text, meaning.text, dir, audio);
-  // }
 
   void createQuestion() {
     List<String> options = [
@@ -420,100 +431,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         dropdownCategory, files[0].path, question, options, dropdownAnswer);
   }
 
-  // Widget _buildPopupDialog(BuildContext context) {
-  //   return AlertDialog(
-  //     title: const Text('Info'),
-  //     content: Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: const <Widget>[
-  //         Text("Saved Successfully"),
-  //       ],
-  //     ),
-  //     actions: <Widget>[
-  //       TextButton(
-  //         onPressed: () {
-  //           setState(() {
-  //             noun.clear();
-  //             meaning.clear();
-  //             _selectedFiles = '';
-  //           });
-  //           Navigator.of(context).pop();
-  //         },
-  //         //color: Theme.of(context).primaryColor,
-  //         child: const Text('Ok'),
-  //       ),
-  //     ],
-  //   );
-  // }
+  void popup(String title, String content) {
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return ClassicGeneralDialogWidget(
+          titleText: title,
+          contentText: content,
+          onPositiveClick: () {
+            Navigator.of(context).pop();
+          },
+          onNegativeClick: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+      animationType: DialogTransitionType.rotate3D,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(seconds: 1),
+    );
+  }
 }
-
-// OutlinedButton(
-//     onPressed: () {
-//       _openFileExplorer();
-//     },
-//     child: const Text(
-//       'Select Images',
-//       style: TextStyle(
-//         fontSize: 18,
-//         fontWeight: FontWeight.w400,
-//       ),
-//     )),
-// Text(_selectedFiles),
-// const SizedBox(height: 10),
-// OutlinedButton(
-//     onPressed: () {
-//       _selectAudio();
-//     },
-//     child: const Text(
-//       'Select Audio',
-//       style: TextStyle(
-//         fontSize: 18,
-//         fontWeight: FontWeight.w400,
-//       ),
-//     )),
-// Text(_audioFile),
-// Center(
-//   child: Padding(
-//     padding: const EdgeInsets.symmetric(vertical: 16.0),
-//     child: ElevatedButton(
-//       style: ElevatedButton.styleFrom(
-//           minimumSize: const Size(100, 50), elevation: 3),
-//       onPressed: () {
-//         // Validate will return true if the form is valid, or false if
-//         // the form is invalid.
-//         if (_formKey.currentState!.validate()) {
-//           // Process data.
-//           saveImage();
-//           saveAudio();
-//           createNoun(
-//               path, '$path/${audio.path.split('\\').last}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) =>
-//                 _buildPopupDialog(context),
-//           );
-//           //Navigator.pushNamed(context, '/home');
-//         }
-//       },
-//       child: const Text(
-//         'Submit',
-//         style: TextStyle(
-//           fontSize: 20,
-//         ),
-//       ),
-//     ),
-//   ),
-// ),
-
-//print(100);
-//print(newDir);
-//print(newDir.path);
-//print('${newDir.path}/${file.path.split('\\').last}');
-//print(300);
-//print('$newDir/${file.path.split('\\').last}');
-
-// print(file.bytes);
-// print(file.size);
-// print(file.extension);
-// print(file.path);
