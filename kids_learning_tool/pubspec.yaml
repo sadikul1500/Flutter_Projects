@@ -38,6 +38,7 @@ dependencies:
   just_audio_libwinmedia: ^0.0.4
   libwinmedia: ^0.0.3
   flutter_animated_dialog: ^2.0.1
+  font_awesome_flutter: ^9.2.0
 
   #kplayer: ^0.1.11
 
