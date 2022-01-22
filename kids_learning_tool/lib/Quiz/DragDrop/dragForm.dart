@@ -37,7 +37,7 @@ class DragFormState extends State<MyStatefulWidget> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
 
-  //String _selectedFiles = '';
+  String _selectedFile = '';
   List<File> files = [];
   List<String> values = [];
 
@@ -70,8 +70,18 @@ class DragFormState extends State<MyStatefulWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 //mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   // name textfield
+                  const Text(
+                    'Add Draggable Objects',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(right: 32.0),
                     child: Row(children: <Widget>[
@@ -87,7 +97,7 @@ class DragFormState extends State<MyStatefulWidget> {
                             ),
                           )),
                       const SizedBox(width: 5),
-                      Text(files.last.path.split('\\').last),
+                      Text(_selectedFile), //files.last.path.split('\\').last
                       const SizedBox(width: 20),
                       SizedBox(
                         width: 200,
@@ -104,18 +114,14 @@ class DragFormState extends State<MyStatefulWidget> {
                           },
                         ),
                       ),
+                      const SizedBox(width: 20),
+                      _addRemoveButton(true, 0),
                     ]),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Add Friends',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
+
                   ..._getFriends(),
                   const SizedBox(
                     height: 40,
@@ -143,12 +149,12 @@ class DragFormState extends State<MyStatefulWidget> {
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: FriendTextFields(i)),
+            Expanded(child: Text(friendsList[i])), //FriendTextFields(i)
             const SizedBox(
               width: 16,
             ),
             // we need add button at last friends row
-            _addRemoveButton(i == friendsList.length - 1, i),
+            _addRemoveButton(false, i), //
           ],
         ),
       ));
@@ -162,8 +168,16 @@ class DragFormState extends State<MyStatefulWidget> {
       onTap: () {
         if (add) {
           // add new text-fields at the top of all friends textfields
-          friendsList.insert(
-              0, files.last.path.split('\\').last + ' ; '+ ); //0, ''
+          values.add(_nameController.text.trim());
+          friendsList.add(
+              files.last.path.split('\\').last + ' ; ' + values.last); //0, ''
+
+          print(values.last);
+          print(friendsList.last);
+          setState(() {
+            _selectedFile = '';
+            _nameController.clear();
+          });
         } else {
           friendsList.removeAt(index);
         }
@@ -214,6 +228,9 @@ class DragFormState extends State<MyStatefulWidget> {
 
     if (result != null) {
       files.add(File((result.files.single.path)!));
+      setState(() {
+        _selectedFile = files.last.path.split('\\').last;
+      });
     } else {
       // User canceled the picker
     }
@@ -260,22 +277,3 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
   }
 }
 
-// FilePickerResult? result = await FilePicker.platform.pickFiles(
-//   allowMultiple: false,
-//   type: FileType.custom,
-//   allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
-// );
-
-// if (result != null) {
-//   files = result.paths.map((path) => File(path!)).toList();
-//   //PlatformFile file = result.files.first;
-
-//   setState(() {
-//     for (File file in files) {
-//       //print(file.path.split('/').last);
-//       _selectedFiles += file.path.split('\\').last;
-//     }
-//   });
-// } else {
-//   // User canceled the picker
-// }
