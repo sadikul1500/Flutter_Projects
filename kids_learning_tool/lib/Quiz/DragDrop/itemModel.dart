@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 
 class ItemModel {
-  String name;
+  //String name;
   String value;
-  IconData icon;
+  //IconData icon;
   bool accepting;
 
-  ItemModel(this.name, this.value, this.icon, {this.accepting = false});
+  ItemModel(this.value, {this.accepting = false}); //this.name,this.icon,
 }
