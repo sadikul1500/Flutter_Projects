@@ -65,149 +65,164 @@ class _DragState extends State<Drag> {
     return Scaffold(
       //backgroundColor: Colors.amber[300],
       appBar: AppBar(centerTitle: true, title: const Text('Drag & drop')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Text.rich(TextSpan(children: [
-              const TextSpan(
-                  text: 'Score: ',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
-              TextSpan(
-                  text: '$score / ${widget.items1.length + score}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 27)),
-            ])),
-            if (gameOver == false)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    children: widget.items1.map((item) {
-                      return Container(
-                        margin:
-                            const EdgeInsets.fromLTRB(100.0, 10.0, 25.0, 8.0),
-                        child: Draggable<ItemModel>(
-                          data: item,
-                          childWhenDragging: const Icon(
-                            FontAwesomeIcons.image,
-                            color: Colors.grey,
-                            size: 50.0,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Text.rich(TextSpan(children: [
+                const TextSpan(
+                    text: 'Score: ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                TextSpan(
+                    text: '$score / ${widget.items1.length + score}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 27)),
+              ])),
+              if (gameOver == false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      children: widget.items1.map((item) {
+                        return Container(
+                          margin:
+                              const EdgeInsets.fromLTRB(100.0, 10.0, 25.0, 8.0),
+                          child: Draggable<ItemModel>(
+                            data: item,
+                            childWhenDragging: SizedBox(
+                                height: 200,
+                                width: 200,
+                                child: Image.file(
+                                  File(item.value.split(' ').first),
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                )),
+                            feedback: SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Image.file(
+                                  File(item.value.split(' ').first),
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                )),
+                            child: SizedBox(
+                                height: 250,
+                                width: 300,
+                                child: Image.file(
+                                  File(item.value.split(' ').first),
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                )),
                           ),
-                          feedback: const Icon(FontAwesomeIcons.image,
-                              color: Colors.blue, size: 50),
-                          child: SizedBox(
-                              height: 300,
-                              width: 400,
-                              child: Image.file(
-                                File(item.value.split(' ').first),
-                                fit: BoxFit.contain,
-                                filterQuality: FilterQuality.high,
-                              )),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const Spacer(),
-                  //const Text('hi'),
-                  Column(
-                    children: widget.items2.map((item) {
-                      return Container(
-                        margin: const EdgeInsets.fromLTRB(25, 10, 100, 8.0),
-                        child: DragTarget<ItemModel>(
-                          onAccept: (receivedItem) {
-                            if (item.value ==
-                                receivedItem.value.split(' ').last) {
-                              setState(() {
-                                //_audioPlayer.seek(Duration.zero);
-                                //receivedItem.icon = FontAwesomeIcons.check;
-                                //item.name = 'Correct!';
-                                //item.value = '#x';
-                                // try {
-                                //   assetsAudioPlayer.open(
-                                //     Audio("assets/Audios/win.wav"),
-                                //     autoStart: true,
-                                //   );
-                                // } catch (e) {
-                                //   print(e);
-                                // }
-                                //_audioPlayer.setAsset('assets/Audios/win.wav');
-                                _audioPlayer.play();
-                                widget.items1.remove(receivedItem);
-                                //items2.remove(item);
-                                dispose();
-                                score += 1;
-                                item.accepting = false;
-                              });
-                            } else {
-                              setState(() {
-                                //score -= 1;
-                                item.accepting = false;
-                              });
-                            }
-                          },
-                          onLeave: (receivedItem) {
-                            setState(() {
-                              item.accepting = false;
-                            });
-                          },
-                          onWillAccept: (receivedItem) {
-                            setState(() {
-                              item.accepting = true;
-                            });
-                            return true;
-                          },
-                          builder: (context, acceptedItem, rejectedItem) =>
-                              Container(
-                            color: item.accepting ? Colors.red : Colors.blue,
-                            height: 50,
-                            width: 100,
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.all(8.0),
-                            child: Text(item.value,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  )
-                ],
-              ),
-            if (gameOver)
-              Column(
-                children: <Widget>[
-                  const Text('Quiz Complete !!!',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      )),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(100, 60), elevation: 3),
-                      child: const Text(
-                        'Try Again',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () {
-                        initDrag();
-                        setState(() {});
-                      },
+                        );
+                      }).toList(),
                     ),
-                  )
-                ],
-              )
-          ],
+                    const Spacer(),
+                    //const Text('hi'),
+                    Column(
+                      children: widget.items2.map((item) {
+                        return Container(
+                          margin: const EdgeInsets.fromLTRB(25, 10, 100, 8.0),
+                          child: DragTarget<ItemModel>(
+                            onAccept: (receivedItem) {
+                              if (item.value ==
+                                  receivedItem.value.split(' ').last) {
+                                setState(() {
+                                  //_audioPlayer.seek(Duration.zero);
+                                  //receivedItem.icon = FontAwesomeIcons.check;
+                                  //item.name = 'Correct!';
+                                  //item.value = '#x';
+                                  // try {
+                                  //   assetsAudioPlayer.open(
+                                  //     Audio("assets/Audios/win.wav"),
+                                  //     autoStart: true,
+                                  //   );
+                                  // } catch (e) {
+                                  //   print(e);
+                                  // }
+                                  //_audioPlayer.setAsset('assets/Audios/win.wav');
+                                  _audioPlayer.play();
+                                  widget.items1.remove(receivedItem);
+                                  //items2.remove(item);
+                                  //dispose();
+                                  score += 1;
+                                  item.accepting = false;
+                                });
+                              } else {
+                                setState(() {
+                                  //score -= 1;
+                                  item.accepting = false;
+                                });
+                              }
+                            },
+                            onLeave: (receivedItem) {
+                              setState(() {
+                                item.accepting = false;
+                              });
+                            },
+                            onWillAccept: (receivedItem) {
+                              setState(() {
+                                item.accepting = true;
+                              });
+                              return true;
+                            },
+                            builder: (context, acceptedItem, rejectedItem) =>
+                                Container(
+                              color: item.accepting ? Colors.red : Colors.blue,
+                              height: 50,
+                              width: 100,
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.all(8.0),
+                              child: Text(item.value,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0)),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  ],
+                ),
+              if (gameOver)
+                Column(
+                  children: <Widget>[
+                    const Text('Quiz Complete !!!',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        )),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(100, 60), elevation: 3),
+                        child: const Text(
+                          'Try Again',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          initDrag();
+                          setState(() {});
+                        },
+                      ),
+                    )
+                  ],
+                )
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+
