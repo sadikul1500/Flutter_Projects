@@ -9,6 +9,9 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:kids_learning_tool/Quiz/DragDrop/drag.dart';
+import 'package:kids_learning_tool/Quiz/DragDrop/itemModel.dart';
+import 'package:kids_learning_tool/Quiz/DragDrop/question.dart';
 
 class DragForm extends StatelessWidget {
   static const String _title = 'Quiz: Drag & Drop';
@@ -37,6 +40,9 @@ class DragFormState extends State<MyStatefulWidget> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _valueController;
+  late DragQuestion question;
+  List<ItemModel> items1 = [];
+  List<ItemModel> items2 = [];
 
   String _selectedFile = '';
   List<File> files = [];
@@ -197,15 +203,17 @@ class DragFormState extends State<MyStatefulWidget> {
                         onPressed: () {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
-                          if (friendsList.isNotEmpty && values.isNotEmpty && valuesRight.isNotEmpty) {
-                            //createQuestion();
-                            // Navigator.of(context).push(
-                            //   // With MaterialPageRoute, you can pass data between pages,
-                            //   // but if you have a more complex app, you will quickly get lost.
-                            //   MaterialPageRoute(
-                            //     builder: (context) => Preview(ques),
-                            //   ),
-                            // );
+                          if (friendsList.isNotEmpty &&
+                              values.isNotEmpty &&
+                              valuesRight.isNotEmpty) {
+                            createQuestion();
+                            Navigator.of(context).push(
+                              // With MaterialPageRoute, you can pass data between pages,
+                              // but if you have a more complex app, you will quickly get lost.
+                              MaterialPageRoute(
+                                builder: (context) => Drag(items1, items2),
+                              ),
+                            );
                             setState(() {
                               _nameController.clear();
                               _valueController.clear();
@@ -242,6 +250,24 @@ class DragFormState extends State<MyStatefulWidget> {
           ),
         ));
   }
+//
+//
+//
+
+  void createQuestion() {
+    //question = DragQuestion(files, values, valuesRight);
+    for (int i = 0; i < values.length; i++) {
+      ItemModel item = ItemModel(files[i].path + ' ' + values[i]);
+      items1.add(item);
+    }
+    for (int i = 0; i < valuesRight.length; i++) {
+      ItemModel item = ItemModel(valuesRight[i]);
+      items2.add(item);
+    }
+  }
+//
+//
+//
 
   Widget dragTarget() {
     return Column(
@@ -420,44 +446,3 @@ class DragFormState extends State<MyStatefulWidget> {
     }
   }
 }
-
-class FriendTextFields extends StatefulWidget {
-  final int index;
-  FriendTextFields(this.index);
-  @override
-  _FriendTextFieldsState createState() => _FriendTextFieldsState();
-}
-
-class _FriendTextFieldsState extends State<FriendTextFields> {
-  late TextEditingController _nameController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _nameController.text = DragFormState.friendsList[widget.index] ?? '';
-    });
-
-    return TextFormField(
-      controller: _nameController,
-      onChanged: (v) => DragFormState.friendsList[widget.index] = v,
-      decoration: const InputDecoration(hintText: 'Enter your friend\'s name'),
-      validator: (v) {
-        if (v!.trim().isEmpty) return 'Please enter something';
-        return null;
-      },
-    );
-  }
-}
-
