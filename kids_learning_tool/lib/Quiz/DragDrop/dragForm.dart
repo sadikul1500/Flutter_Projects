@@ -36,15 +36,19 @@ class DragFormState extends State<MyStatefulWidget> {
   static List<String> friendsList = [];
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
+  late TextEditingController _valueController;
 
   String _selectedFile = '';
   List<File> files = [];
   List<String> values = [];
+  List<String> valuesRight = [];
+  bool showWidget = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _valueController = TextEditingController();
   }
 
   @override
@@ -68,7 +72,7 @@ class DragFormState extends State<MyStatefulWidget> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 //mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   // name textfield
@@ -76,47 +80,53 @@ class DragFormState extends State<MyStatefulWidget> {
                     'Add Draggable Objects',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontSize: 20,
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 32.0),
-                    child: Row(children: <Widget>[
-                      OutlinedButton(
-                          onPressed: () {
-                            _openFileExplorer();
-                          },
-                          child: const Text(
-                            'Select an Image',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
+                    child: Row(
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          OutlinedButton(
+                              onPressed: () {
+                                _openFileExplorer();
+                              },
+                              child: const Text(
+                                'Select an Image',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              )),
+                          const SizedBox(width: 5),
+                          Text(
+                              _selectedFile), //files.last.path.split('\\').last
+                          const SizedBox(width: 20),
+                          SizedBox(
+                            width: 200,
+                            height: 25,
+                            child: TextFormField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                hintText: 'Enter value of the image',
+                                //labelText: 'image',
+                              ),
+                              validator: (v) {
+                                if (v!.trim().isEmpty) {
+                                  return 'Please enter something';
+                                }
+                                return null;
+                              },
                             ),
-                          )),
-                      const SizedBox(width: 5),
-                      Text(_selectedFile), //files.last.path.split('\\').last
-                      const SizedBox(width: 20),
-                      SizedBox(
-                        width: 200,
-                        height: 25,
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                              hintText: 'Enter value to match'),
-                          validator: (v) {
-                            if (v!.trim().isEmpty) {
-                              return 'Please enter something';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      _addRemoveButton(true, 0),
-                    ]),
+                          ),
+                          const SizedBox(width: 20),
+                          _addRemoveButton(true, 0),
+                        ]),
                   ),
                   const SizedBox(
                     height: 20,
@@ -124,16 +134,107 @@ class DragFormState extends State<MyStatefulWidget> {
 
                   ..._getFriends(),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                      }
-                    },
-                    child: const Text('Submit'),
-                    //color: Colors.green,
+                  //
+                  //
+                  //
+                  //
+                  //
+                  //
+                  const Text(
+                    'Add Drag Traget Objects',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 32.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 390,
+                            height: 25,
+                            child: TextFormField(
+                              controller: _valueController,
+                              decoration: const InputDecoration(
+                                  hintText: 'Enter value to match'),
+                              validator: (v) {
+                                if (v!.trim().isEmpty) {
+                                  return 'Please enter something';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          _addRemoveButtonAgain(true, 0),
+                        ]),
+                  ),
+                  const SizedBox(height: 20),
+                  ..._getValuesRight(),
+                  const SizedBox(height: 20),
+                  //
+                  //
+                  //
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
+                        child: const Text(
+                          'Preview',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(100, 50), elevation: 3),
+                        onPressed: () {
+                          // Validate will return true if the form is valid, or false if
+                          // the form is invalid.
+                          if (friendsList.isNotEmpty && values.isNotEmpty && valuesRight.isNotEmpty) {
+                            //createQuestion();
+                            // Navigator.of(context).push(
+                            //   // With MaterialPageRoute, you can pass data between pages,
+                            //   // but if you have a more complex app, you will quickly get lost.
+                            //   MaterialPageRoute(
+                            //     builder: (context) => Preview(ques),
+                            //   ),
+                            // );
+                            setState(() {
+                              _nameController.clear();
+                              _valueController.clear();
+                            });
+                          }
+                        },
+                      ),
+                      //const Spacer(),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(100, 50), elevation: 3),
+                        onPressed: () {
+                          // if (_formKey.currentState!.validate()) {
+                          //   String selectedfile = _selectedFiles;
+                          //   selectDirectory(selectedfile);
+                          //   setState(() {
+                          //     _selectedFiles = '';
+                          //     //newImagePath = '';
+                          //   });
+                          // }
+                        },
+                        child: const Text(
+                          'Save',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -142,19 +243,72 @@ class DragFormState extends State<MyStatefulWidget> {
         ));
   }
 
+  Widget dragTarget() {
+    return Column(
+      children: <Widget>[
+        const SizedBox(height: 10),
+        const Text('Called'),
+        TextFormField(
+          controller: _nameController,
+          // onChanged: (v) => DragFormState.friendsList[widget.index] = v,
+          decoration: const InputDecoration(
+              hintText: 'Enter the exact value as the drag objects'),
+          validator: (v) {
+            if (v!.trim().isEmpty) return 'Please enter something';
+            return null;
+          },
+        )
+      ],
+    );
+  }
+
   List<Widget> _getFriends() {
     List<Widget> friendsTextFields = [];
     for (int i = 0; i < friendsList.length; i++) {
       friendsTextFields.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(child: Text(friendsList[i])), //FriendTextFields(i)
+            SizedBox(
+                width: 360,
+                child: Text(
+                  friendsList[i],
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w600),
+                )), //FriendTextFields(i)
             const SizedBox(
               width: 16,
             ),
             // we need add button at last friends row
             _addRemoveButton(false, i), //
+          ],
+        ),
+      ));
+    }
+    return friendsTextFields;
+  }
+
+  List<Widget> _getValuesRight() {
+    List<Widget> friendsTextFields = [];
+    for (int i = 0; i < valuesRight.length; i++) {
+      friendsTextFields.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                width: 360,
+                child: Text(
+                  valuesRight[i],
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w600),
+                )), //FriendTextFields(i)
+            const SizedBox(
+              width: 16,
+            ),
+            // we need add button at last friends row
+            _addRemoveButtonAgain(false, i), //
           ],
         ),
       ));
@@ -172,14 +326,44 @@ class DragFormState extends State<MyStatefulWidget> {
           friendsList.add(
               files.last.path.split('\\').last + ' ; ' + values.last); //0, ''
 
-          print(values.last);
-          print(friendsList.last);
+          // print(values.last);
+          // print(friendsList.last);
           setState(() {
             _selectedFile = '';
             _nameController.clear();
           });
         } else {
           friendsList.removeAt(index);
+        }
+        setState(() {});
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: (add) ? Colors.green : Colors.red,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(
+          (add) ? Icons.add : Icons.remove,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _addRemoveButtonAgain(bool add, int index) {
+    return InkWell(
+      onTap: () {
+        if (add) {
+          // add new text-fields at the top of all friends textfields
+          valuesRight.add(_valueController.text.trim());
+
+          setState(() {
+            _valueController.clear();
+          });
+        } else {
+          valuesRight.removeAt(index);
         }
         setState(() {});
       },
