@@ -1,0 +1,5 @@
+Mask
+Covered Mask_Chin
+Covered Mask_Mouth_Chin
+Covered Mask_Nose_Mouth
+No_Mask
